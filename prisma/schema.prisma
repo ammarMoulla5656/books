@@ -1,0 +1,327 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// ADMIN & AUTHENTICATION
+// ============================================
+
+model Admin {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String
+  name          String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("admins")
+}
+
+// ============================================
+// CATEGORIES
+// ============================================
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  arabicName  String
+  description String?
+  icon        String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  books       Book[]
+  bookSeries  BookSeries[]
+
+  @@map("categories")
+}
+
+// ============================================
+// BOOK SERIES (for multi-volume books)
+// ============================================
+
+model BookSeries {
+  id            String   @id @default(cuid())
+  title         String
+  author        String
+  description   String?
+  categoryId    String
+  coverImage    String?
+  order         Int      @default(0)
+  totalVolumes  Int      @default(1)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  category      Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  volumes       Volume[]
+
+  @@map("book_series")
+}
+
+// ============================================
+// VOLUMES
+// ============================================
+
+model Volume {
+  id            String   @id @default(cuid())
+  seriesId      String
+  number        Int
+  title         String
+  coverImage    String?
+  pageCount     Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  series        BookSeries @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  parts         Part[]
+
+  @@map("volumes")
+}
+
+// ============================================
+// PARTS (أجزاء)
+// ============================================
+
+model Part {
+  id        String   @id @default(cuid())
+  volumeId  String
+  number    Int
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  volume    Volume    @relation(fields: [volumeId], references: [id], onDelete: Cascade)
+  chapters  Chapter[]
+
+  @@map("parts")
+}
+
+// ============================================
+// BOOKS (Single books or standalone)
+// ============================================
+
+model Book {
+  id          String   @id @default(cuid())
+  title       String
+  author      String?
+  coverImage  String?
+  categoryId  String
+  order       Int      @default(0)
+  pageCount   Int?
+  seriesId    String?
+  volumeNumber Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  chapters    Chapter[]
+  bookmarks   Bookmark[]
+  highlights  Highlight[]
+
+  @@map("books")
+}
+
+// ============================================
+// CHAPTERS
+// ============================================
+
+model Chapter {
+  id        String   @id @default(cuid())
+  title     String
+  order     Int      @default(0)
+  bookId    String?
+  partId    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  book      Book?    @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  part      Part?    @relation(fields: [partId], references: [id], onDelete: Cascade)
+  sections  Section[]
+
+  @@map("chapters")
+}
+
+// ============================================
+// SECTIONS
+// ============================================
+
+model Section {
+  id        String   @id @default(cuid())
+  chapterId String
+  title     String
+  content   String   @db.Text
+  pageCount Int?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chapter   Chapter     @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  bookmarks Bookmark[]
+  highlights Highlight[]
+
+  @@map("sections")
+}
+
+// ============================================
+// USER SESSIONS (for anonymous users)
+// ============================================
+
+model UserSession {
+  id            String   @id @default(cuid())
+  sessionToken  String   @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastActive    DateTime @default(now())
+
+  bookmarks     Bookmark[]
+  highlights    Highlight[]
+  readingSettings ReadingSettings?
+
+  @@map("user_sessions")
+}
+
+// ============================================
+// BOOKMARKS
+// ============================================
+
+model Bookmark {
+  id          String   @id @default(cuid())
+  sessionId   String
+  bookId      String
+  sectionId   String
+  text        String   @db.Text
+  pageNumber  Int?
+  volumeId    String?
+  partId      String?
+  createdAt   DateTime @default(now())
+
+  session     UserSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  book        Book        @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  section     Section     @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@map("bookmarks")
+}
+
+// ============================================
+// HIGHLIGHTS
+// ============================================
+
+model Highlight {
+  id          String   @id @default(cuid())
+  sessionId   String
+  bookId      String
+  sectionId   String
+  text        String   @db.Text
+  color       String
+  startOffset Int
+  endOffset   Int
+  createdAt   DateTime @default(now())
+
+  session     UserSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  book        Book        @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  section     Section     @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@map("highlights")
+}
+
+// ============================================
+// READING SETTINGS
+// ============================================
+
+model ReadingSettings {
+  id              String   @id @default(cuid())
+  sessionId       String   @unique
+  fontSize        Int      @default(16)
+  lineSpacing     Float    @default(1.5)
+  darkMode        Boolean  @default(false)
+  backgroundColor String?
+  textColor       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  session         UserSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("reading_settings")
+}
+
+// ============================================
+// THEME BACKGROUNDS
+// ============================================
+
+model ThemeBackground {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  imageUrl    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("theme_backgrounds")
+}
+
+// ============================================
+// SUGGESTIONS
+// ============================================
+
+model Suggestion {
+  id            String   @id @default(cuid())
+  email         String?
+  referenceCode String?
+  message       String   @db.Text
+  status        String   @default("pending")
+  adminNote     String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("suggestions")
+}
+
+// ============================================
+// VISITOR ANALYTICS
+// ============================================
+
+model VisitorLog {
+  id          String   @id @default(cuid())
+  sessionId   String
+  ipAddress   String?
+  userAgent   String?
+  page        String?
+  action      String?
+  timestamp   DateTime @default(now())
+
+  @@index([timestamp])
+  @@index([sessionId])
+  @@map("visitor_logs")
+}
+
+model DailyStats {
+  id              String   @id @default(cuid())
+  date            DateTime @unique
+  uniqueVisitors  Int      @default(0)
+  totalPageViews  Int      @default(0)
+  newBooks        Int      @default(0)
+  newBookmarks    Int      @default(0)
+
+  @@map("daily_stats")
+}
+
+// ============================================
+// SYSTEM SETTINGS
+// ============================================
+
+model SystemSettings {
+  id              String   @id @default(cuid())
+  key             String   @unique
+  value           String   @db.Text
+  description     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("system_settings")
+}

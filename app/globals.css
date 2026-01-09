@@ -1,0 +1,336 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --accent: #16a34a;
+  --accent-hover: #15803d;
+
+  /* Islamic Theme Colors - Light Mode */
+  --islamic-primary: #1a5f3f;
+  --islamic-secondary: #d4af37;
+  --islamic-gold: #d4af37;
+  --islamic-cream: #f5f1e8;
+  --islamic-green: #1a5f3f;
+  --islamic-green-light: #2d7a54;
+  --islamic-border: #e5dcc8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f1419;
+    --foreground: #e8dcc4;
+  }
+}
+
+.dark {
+  --background: #0f1419;
+  --foreground: #e8dcc4;
+
+  /* Islamic Theme Colors - Dark Mode */
+  --islamic-primary: #d4af37;
+  --islamic-secondary: #1a5f3f;
+  --islamic-gold: #d4af37;
+  --islamic-cream: #e8dcc4;
+  --islamic-green: #2d7a54;
+  --islamic-green-light: #3d8a64;
+  --islamic-dark-bg: #0f1419;
+  --islamic-dark-card: #1a2028;
+  --islamic-dark-border: #2d3748;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Arabic text support */
+.arabic-text {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Traditional Arabic', 'Geeza Pro', 'Arabic Typesetting', 'Segoe UI', sans-serif;
+}
+
+/* Highlight issue numbers */
+.issue-number {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.dark .issue-number {
+  color: #22c55e;
+}
+
+/* Selection styling */
+::selection {
+  background-color: #fde047;
+  color: #000;
+}
+
+.dark ::selection {
+  background-color: #ca8a04;
+  color: #fff;
+}
+
+/* Islamic Decorative Patterns */
+.islamic-pattern {
+  position: relative;
+  overflow: hidden;
+}
+
+.islamic-pattern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--islamic-gold) 0%,
+    var(--islamic-green) 50%,
+    var(--islamic-gold) 100%);
+  opacity: 0.6;
+}
+
+.islamic-border {
+  border: 2px solid var(--islamic-gold);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+.dark .islamic-border {
+  border-color: var(--islamic-gold);
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+}
+
+/* Islamic Card Style */
+.islamic-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f5f1e8 100%);
+  border: 1px solid var(--islamic-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(26, 95, 63, 0.1);
+  transition: all 0.3s ease;
+}
+
+.dark .islamic-card {
+  background: linear-gradient(145deg, #1a2028 0%, #141b22 100%);
+  border-color: var(--islamic-dark-border);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
+}
+
+.islamic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(26, 95, 63, 0.2);
+}
+
+.dark .islamic-card:hover {
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.25);
+  border-color: var(--islamic-gold);
+}
+
+/* Islamic Button */
+.islamic-button {
+  background: linear-gradient(135deg, var(--islamic-green) 0%, var(--islamic-green-light) 100%);
+  color: white;
+  border: 1px solid var(--islamic-gold);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(26, 95, 63, 0.2);
+}
+
+.islamic-button:hover {
+  background: linear-gradient(135deg, var(--islamic-green-light) 0%, var(--islamic-green) 100%);
+  box-shadow: 0 4px 15px rgba(26, 95, 63, 0.3);
+  transform: translateY(-2px);
+}
+
+.dark .islamic-button {
+  background: linear-gradient(135deg, #2d7a54 0%, #1a5f3f 100%);
+  border-color: var(--islamic-gold);
+}
+
+.dark .islamic-button:hover {
+  background: linear-gradient(135deg, #3d8a64 0%, #2d7a54 100%);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+
+/* Islamic Gold Text */
+.islamic-gold-text {
+  color: var(--islamic-gold);
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+  font-weight: 700;
+}
+
+/* Islamic Header Decoration */
+.islamic-header {
+  position: relative;
+  padding: 20px 0;
+}
+
+.islamic-header::before,
+.islamic-header::after {
+  content: '❈';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--islamic-gold);
+  font-size: 20px;
+  opacity: 0.6;
+}
+
+.islamic-header::before {
+  left: 0;
+}
+
+.islamic-header::after {
+  right: 0;
+}
+
+/* Text Highlight Colors */
+.highlight-yellow {
+  background-color: rgba(253, 224, 71, 0.3);
+  border-bottom: 2px solid #fde047;
+}
+
+.highlight-green {
+  background-color: rgba(134, 239, 172, 0.3);
+  border-bottom: 2px solid #86efac;
+}
+
+.highlight-blue {
+  background-color: rgba(147, 197, 253, 0.3);
+  border-bottom: 2px solid #93c5fd;
+}
+
+.highlight-pink {
+  background-color: rgba(251, 207, 232, 0.3);
+  border-bottom: 2px solid #fbcfe8;
+}
+
+.highlight-purple {
+  background-color: rgba(216, 180, 254, 0.3);
+  border-bottom: 2px solid #d8b4fe;
+}
+
+/* Dark mode highlights */
+.dark .highlight-yellow {
+  background-color: rgba(202, 138, 4, 0.3);
+  border-bottom-color: #ca8a04;
+}
+
+.dark .highlight-green {
+  background-color: rgba(34, 197, 94, 0.3);
+  border-bottom-color: #22c55e;
+}
+
+.dark .highlight-blue {
+  background-color: rgba(59, 130, 246, 0.3);
+  border-bottom-color: #3b82f6;
+}
+
+.dark .highlight-pink {
+  background-color: rgba(236, 72, 153, 0.3);
+  border-bottom-color: #ec4899;
+}
+
+.dark .highlight-purple {
+  background-color: rgba(168, 85, 247, 0.3);
+  border-bottom-color: #a855f7;
+}
+
+/* Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--islamic-cream);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--islamic-dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--islamic-green);
+  border-radius: 5px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--islamic-gold);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--islamic-green-light);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #e5c35a;
+}
+
+/* Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.loading-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(212, 175, 55, 0.1) 0%,
+    rgba(212, 175, 55, 0.3) 50%,
+    rgba(212, 175, 55, 0.1) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Islamic Divider */
+.islamic-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 24px 0;
+}
+
+.islamic-divider::before,
+.islamic-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 2px solid var(--islamic-gold);
+  opacity: 0.3;
+}
+
+.islamic-divider::before {
+  margin-left: 16px;
+}
+
+.islamic-divider::after {
+  margin-right: 16px;
+}
+
+.islamic-divider-text {
+  padding: 0 16px;
+  color: var(--islamic-gold);
+  font-weight: 600;
+}
