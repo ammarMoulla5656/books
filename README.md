@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🕌 المكتبة الإسلامية | Islamic Library
 
 <div align="center">
@@ -326,3 +327,6 @@ Built with ❤️ for the Islamic community
 *Version 2.0.0 - Complete Edition*
 
 </div>
+=======
+# books
+>>>>>>> 88c664cace2cf056157da2e56d3fd1b4dd0a28d9
