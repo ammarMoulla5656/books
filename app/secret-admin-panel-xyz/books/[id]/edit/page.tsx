@@ -291,7 +291,7 @@ export default function EditBookPage() {
                   التصنيف *
                 </label>
                 <select
-                  value={bookData.category}
+                  value={typeof bookData.category === 'string' ? bookData.category : ''}
                   onChange={(e) =>
                     setBookData({ ...bookData, category: e.target.value })
                   }

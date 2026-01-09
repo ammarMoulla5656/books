@@ -1,11 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import { PrismaSQLite } from '@prisma/adapter-sqlite';
-import Database from 'better-sqlite3';
 import bcrypt from 'bcryptjs';
 
-const db = new Database('prisma/dev.db');
-const adapter = new PrismaSQLite(db);
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 بدء إضافة البيانات الأساسية...');
@@ -43,11 +39,15 @@ async function main() {
   ];
 
   for (const category of categories) {
-    await prisma.category.upsert({
+    const existing = await prisma.category.findFirst({
       where: { arabicName: category.arabicName },
-      update: {},
-      create: category,
     });
+
+    if (!existing) {
+      await prisma.category.create({
+        data: category,
+      });
+    }
   }
 
   console.log('✅ تم إنشاء التصنيفات');
@@ -77,5 +77,4 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
-    db.close();
   });

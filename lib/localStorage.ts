@@ -326,7 +326,8 @@ export function searchBooksLocal(searchTerm: string): Book[] {
     if (book.title.toLowerCase().includes(lowercaseSearch)) return true;
 
     // Search in category
-    if (book.category.toLowerCase().includes(lowercaseSearch)) return true;
+    const category = typeof book.category === 'string' ? book.category : '';
+    if (category.toLowerCase().includes(lowercaseSearch)) return true;
 
     // Search in chapters
     for (const chapter of book.chapters) {

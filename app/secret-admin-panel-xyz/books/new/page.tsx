@@ -257,7 +257,7 @@ export default function NewBookPage() {
                   التصنيف *
                 </label>
                 <select
-                  value={bookData.category}
+                  value={typeof bookData.category === 'string' ? bookData.category : ''}
                   onChange={(e) => setBookData({ ...bookData, category: e.target.value })}
                   required
                   className="w-full px-4 py-3 rounded-lg border-2 border-[#e5dcc8] dark:border-[#2d3748] bg-white dark:bg-[#141b22] text-[#1a5f3f] dark:text-[#e8dcc4] focus:outline-none focus:border-[#d4af37] arabic-text"

@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(npx tsx:*)",
+      "Bash(node --loader ts-node/esm prisma/seed.ts:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(taskkill:*)",
+      "Bash(curl:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(node create-admin.js:*)",
+      "Bash(npx prisma db push:*)",
+      "Bash(sc query:*)",
+      "Bash(psql:*)",
+      "Bash(\"C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe\" -U postgres -c \"CREATE DATABASE islamic_library;\")",
+      "Bash(cmd.exe //c \"\"\"C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe\"\" -U postgres -c \"\"CREATE DATABASE islamic_library;\"\"\")",
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout 8 cmd:*)",
+      "Bash(npm start)",
+      "Bash(timeout 5 cmd:*)",
+      "Bash(timeout:*)",
+      "Bash(powershell -Command \"Start-Sleep -Seconds 8\")",
+      "Bash(python -c:*)",
+      "Bash(dir:*)",
+      "Bash(move \"docs\\\\خطة_تطبيق_الموبايل_المتكاملة.md\" \"mobile-app\\\\plans\\\\خطة_تطبيق_الموبايل_المتكاملة.md\")"
+    ]
+  }
+}

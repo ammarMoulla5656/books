@@ -148,7 +148,7 @@ export async function GET(request: Request) {
     // Get book details for popular books
     const popularBooks = await Promise.all(
       bookViews.map(async (view) => {
-        const bookId = view.page.split('/books/')[1]?.split('/')[0];
+        const bookId = view.page?.split('/books/')[1]?.split('/')[0];
         if (!bookId) return null;
 
         const book = await prisma.book.findUnique({
