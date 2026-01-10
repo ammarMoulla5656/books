@@ -9,7 +9,7 @@ const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL || 'http://localhost:8
 // TYPES
 // ============================================
 
-export type DocumentType = 'PDF' | 'DOCX';
+export type DocumentType = 'PDF' | 'DOCX' | 'ABX';
 
 export type ProcessingStatus =
   | 'PENDING'

@@ -415,6 +415,7 @@ model OcrCache {
 enum DocumentType {
   PDF
   DOCX
+  ABX
 }
 
 enum ProcessingStatus {

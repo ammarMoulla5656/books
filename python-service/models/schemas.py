@@ -15,6 +15,7 @@ from datetime import datetime
 class DocumentType(str, Enum):
     PDF = "PDF"
     DOCX = "DOCX"
+    ABX = "ABX"
 
 
 class ProcessingStatus(str, Enum):

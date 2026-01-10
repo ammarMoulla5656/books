@@ -74,10 +74,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type
-    const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    if (!allowedTypes.includes(file.type)) {
+    const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/x-abx'];
+    const allowedExtensions = ['.pdf', '.docx', '.abx'];
+    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
       return NextResponse.json(
-        { error: 'Invalid file type. Only PDF and DOCX are allowed.' },
+        { error: 'Invalid file type. Only PDF, DOCX, and ABX are allowed.' },
         { status: 400 }
       );
     }
@@ -106,7 +109,10 @@ export async function POST(request: NextRequest) {
     await writeFile(filePath, buffer);
 
     // Determine file type
-    const fileType = fileExt === 'pdf' ? 'PDF' : 'DOCX';
+    let fileType: 'PDF' | 'DOCX' | 'ABX' = 'PDF';
+    if (fileExt === 'pdf') fileType = 'PDF';
+    else if (fileExt === 'docx') fileType = 'DOCX';
+    else if (fileExt === 'abx') fileType = 'ABX';
 
     // Create database record
     const upload = await prisma.documentUpload.create({

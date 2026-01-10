@@ -11,6 +11,7 @@ import {
   FiArrowLeft,
   FiImage,
   FiEye,
+  FiUpload,
 } from 'react-icons/fi';
 import type { Book } from '@/lib/types';
 
@@ -113,13 +114,22 @@ export default function AdminBooksPage() {
                 </p>
               </div>
             </div>
-            <Link
-              href="/secret-admin-panel-xyz/books/new"
-              className="islamic-button flex items-center gap-2"
-            >
-              <FiPlus className="w-5 h-5" />
-              <span className="arabic-text">إضافة كتاب جديد</span>
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/secret-admin-panel-xyz/books/upload"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-white transition-colors"
+              >
+                <FiUpload className="w-5 h-5" />
+                <span className="arabic-text">رفع من ملف</span>
+              </Link>
+              <Link
+                href="/secret-admin-panel-xyz/books/new"
+                className="islamic-button flex items-center gap-2"
+              >
+                <FiPlus className="w-5 h-5" />
+                <span className="arabic-text">إضافة كتاب جديد</span>
+              </Link>
+            </div>
           </div>
         </div>
       </header>

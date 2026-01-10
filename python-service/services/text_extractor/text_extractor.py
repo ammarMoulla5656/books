@@ -1,6 +1,6 @@
 """
 Text Extractor - Main Module
-Unified interface for extracting text from PDF and DOCX files.
+Unified interface for extracting text from PDF, DOCX, and ABX files.
 """
 
 import logging
@@ -11,6 +11,7 @@ from models import ExtractedText, PageContent
 from config import settings
 from .pdf_extractor import PDFExtractor
 from .ocr_processor import OCRProcessor
+from .abx_extractor import ABXExtractor
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +24,7 @@ class TextExtractor:
 
     def __init__(self):
         self.pdf_extractor = PDFExtractor()
+        self.abx_extractor = ABXExtractor()
         self.ocr_processor = None  # Lazy loaded
 
     async def extract(
@@ -53,6 +55,8 @@ class TextExtractor:
             return await self._extract_from_pdf(file_path, use_ocr, ocr_provider)
         elif file_ext in [".docx", ".doc"]:
             return await self._extract_from_docx(file_path)
+        elif file_ext == ".abx":
+            return await self.abx_extractor.extract(file_path)
         else:
             raise ValueError(f"Unsupported file type: {file_ext}")
 
@@ -170,6 +174,9 @@ class TextExtractor:
         elif file_ext in [".docx", ".doc"]:
             docx_info = await self._get_docx_info(file_path)
             info.update(docx_info)
+        elif file_ext == ".abx":
+            abx_info = await self._get_abx_info(file_path)
+            info.update(abx_info)
 
         return info
 
@@ -190,4 +197,21 @@ class TextExtractor:
             }
         except Exception as e:
             logger.error(f"Failed to get DOCX info: {e}")
+            return {}
+
+    async def _get_abx_info(self, file_path: str) -> dict:
+        """Get ABX metadata."""
+        try:
+            # Extract content to get basic info
+            extracted = await self.abx_extractor.extract(file_path)
+
+            return {
+                "title": "",  # Could be extracted from metadata
+                "author": "",  # Could be extracted from metadata
+                "subject": "",
+                "page_count": extracted.total_pages,
+                "has_toc": False  # Will need to detect from content
+            }
+        except Exception as e:
+            logger.error(f"Failed to get ABX info: {e}")
             return {}
