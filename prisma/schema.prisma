@@ -325,3 +325,107 @@ model SystemSettings {
 
   @@map("system_settings")
 }
+
+// ============================================
+// DOCUMENT PROCESSING
+// ============================================
+
+model DocumentUpload {
+  id            String   @id @default(cuid())
+  filename      String
+  originalName  String
+  fileType      DocumentType
+  fileSize      Int
+  storagePath   String
+  status        ProcessingStatus @default(PENDING)
+  progress      Int      @default(0)
+  errorMessage  String?
+
+  // Detected book info
+  detectedTitle      String?
+  detectedAuthor     String?
+  pageCount          Int?
+
+  // Processing options
+  useOcr             Boolean @default(false)
+  useAiParsing       Boolean @default(true)
+  aiProvider         String?
+
+  // Relations
+  bookId        String?  @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  completedAt   DateTime?
+
+  logs          ProcessingLog[]
+  extractedToc  ExtractedTocItem[]
+
+  @@map("document_uploads")
+}
+
+model ProcessingLog {
+  id          String   @id @default(cuid())
+  uploadId    String
+  step        String
+  status      String
+  message     String
+  details     Json?
+  duration    Int?
+  createdAt   DateTime @default(now())
+
+  upload      DocumentUpload @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+
+  @@map("processing_logs")
+}
+
+model ExtractedTocItem {
+  id          String   @id @default(cuid())
+  uploadId    String
+  title       String
+  pageNumber  Int?
+  level       Int      @default(1)
+  order       Int
+  parentId    String?
+  extractedContent  String?  @db.Text
+  contentStartPage  Int?
+  contentEndPage    Int?
+  createdAt   DateTime @default(now())
+
+  upload      DocumentUpload @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+  parent      ExtractedTocItem? @relation("TocHierarchy", fields: [parentId], references: [id])
+  children    ExtractedTocItem[] @relation("TocHierarchy")
+
+  @@map("extracted_toc_items")
+}
+
+model OcrCache {
+  id          String   @id @default(cuid())
+  fileHash    String
+  pageNumber  Int
+  text        String   @db.Text
+  confidence  Float?
+  language    String   @default("ar")
+  createdAt   DateTime @default(now())
+
+  @@unique([fileHash, pageNumber])
+  @@index([fileHash])
+  @@map("ocr_cache")
+}
+
+enum DocumentType {
+  PDF
+  DOCX
+}
+
+enum ProcessingStatus {
+  PENDING
+  UPLOADING
+  EXTRACTING_TEXT
+  DETECTING_TOC
+  PARSING_STRUCTURE
+  SPLITTING_CONTENT
+  SAVING_TO_DB
+  COMPLETED
+  FAILED
+  CANCELLED
+}

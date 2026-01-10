@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="المكتبة الإسلامية الشيعية - مكتبة رقمية شاملة مدعومة بالذكاء الاصطناعي تضم كتب الفقه والعقائد والحديث والتفسير">
+    <meta name="keywords" content="مكتبة إسلامية, كتب شيعية, فقه, عقائد, حديث, تفسير, أهل البيت">
+    <meta name="theme-color" content="#f5f5f0">
+
+    <title>المكتبة الإسلامية - مكتبة رقمية مدعومة بالذكاء الاصطناعي</title>
+
+    <!-- الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- الأنماط -->
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/context-menu.css">
+    <link rel="stylesheet" href="css/text-finder.css">
+    <link rel="stylesheet" href="css/smart-fetch.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- أيقونة الموقع -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <span class="navbar-logo">📚</span>
+                <span>المكتبة الإسلامية</span>
+            </a>
+
+            <nav class="navbar-nav">
+                <a href="index.html" class="nav-link active">الرئيسية</a>
+                <a href="category.html?id=fiqh" class="nav-link">الفقه</a>
+                <a href="category.html?id=aqeedah" class="nav-link">العقائد</a>
+                <a href="category.html?id=hadith" class="nav-link">الحديث</a>
+                <a href="search.html" class="nav-link">البحث</a>
+            </nav>
+
+            <div class="navbar-actions">
+                <button class="theme-toggle" aria-label="تبديل الثيم">
+                    <span class="theme-toggle-sun">☀️</span>
+                    <span class="theme-toggle-moon">🌙</span>
+                </button>
+
+                <button class="navbar-toggle" aria-label="القائمة">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main>
+        <!-- قسم البطل -->
+        <section class="hero">
+            <div class="hero-bg islamic-pattern"></div>
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        المكتبة الإسلامية
+                        <span class="hero-title-accent">الذكية</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        اكتشف كنوز المعرفة الإسلامية من كتب أهل البيت عليهم السلام
+                        <br>
+                        مدعومة بتقنيات الذكاء الاصطناعي للتلخيص والشرح والبحث الذكي
+                    </p>
+
+                    <!-- شريط البحث -->
+                    <div class="search-bar">
+                        <input
+                            type="text"
+                            class="search-input"
+                            id="hero-search"
+                            placeholder="ابحث عن كتاب، مؤلف، أو موضوع..."
+                            autocomplete="off"
+                        >
+                        <button class="search-btn" aria-label="بحث">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <span class="hero-stat-number">300+</span>
+                            <span class="hero-stat-label">كتاب</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-number">50+</span>
+                            <span class="hero-stat-label">مؤلف</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-number">8</span>
+                            <span class="hero-stat-label">تصنيفات</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم التصنيفات -->
+        <section class="categories-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">تصفح حسب التصنيف</h2>
+                    <p class="section-subtitle">اختر التصنيف الذي يناسب اهتماماتك</p>
+                </div>
+
+                <div class="categories-grid grid-auto" id="categories-grid">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الكتب المميزة -->
+        <section class="featured-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">الكتب المميزة</h2>
+                    <p class="section-subtitle">أهم المصادر في المكتبة الإسلامية</p>
+                </div>
+
+                <div class="featured-books grid-auto" id="featured-books">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+
+                <div class="text-center mt-xl">
+                    <a href="search.html" class="btn btn-outline btn-lg">
+                        عرض جميع الكتب
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الميزات -->
+        <section class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">مميزات المكتبة</h2>
+                    <p class="section-subtitle">تقنيات حديثة لتجربة قراءة أفضل</p>
+                </div>
+
+                <div class="features-grid grid-3">
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3 class="feature-title">تلخيص بالذكاء الاصطناعي</h3>
+                        <p class="feature-desc">احصل على ملخص فوري لأي صفحة أو فصل بضغطة زر</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">💡</div>
+                        <h3 class="feature-title">شرح النصوص</h3>
+                        <p class="feature-desc">حدد أي نص واحصل على شرح مفصل له</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <h3 class="feature-title">بحث ذكي</h3>
+                        <p class="feature-desc">اكتب ما تتذكره من النص وسنجده لك</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🌓</div>
+                        <h3 class="feature-title">وضع ليلي</h3>
+                        <p class="feature-desc">اقرأ براحة في أي وقت مع دعم الوضع الداكن</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3 class="feature-title">متجاوب</h3>
+                        <p class="feature-desc">تصميم متوافق مع جميع الأجهزة</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🔖</div>
+                        <h3 class="feature-title">علامات مرجعية</h3>
+                        <p class="feature-desc">احفظ مكانك وعد إليه في أي وقت</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الدعوة للعمل -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2 class="cta-title">ابدأ رحلتك في طلب العلم</h2>
+                    <p class="cta-text">
+                        "طلب العلم فريضة على كل مسلم ومسلمة"
+                        <br>
+                        <span class="cta-attribution">- رسول الله صلى الله عليه وآله</span>
+                    </p>
+                    <a href="search.html" class="btn btn-gold btn-lg">
+                        استكشف المكتبة
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span>📚</span>
+                        <span>المكتبة الإسلامية</span>
+                    </div>
+                    <p class="footer-desc">
+                        مكتبة رقمية شاملة لكتب أهل البيت عليهم السلام، مدعومة بتقنيات الذكاء الاصطناعي لتسهيل البحث والقراءة.
+                    </p>
+                </div>
+
+                <div class="footer-links-group">
+                    <h4 class="footer-title">التصنيفات</h4>
+                    <ul class="footer-links">
+                        <li><a href="category.html?id=fiqh" class="footer-link">الفقه</a></li>
+                        <li><a href="category.html?id=aqeedah" class="footer-link">العقائد</a></li>
+                        <li><a href="category.html?id=hadith" class="footer-link">الحديث</a></li>
+                        <li><a href="category.html?id=tafsir" class="footer-link">التفسير</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links-group">
+                    <h4 class="footer-title">روابط سريعة</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html" class="footer-link">الرئيسية</a></li>
+                        <li><a href="search.html" class="footer-link">البحث</a></li>
+                        <li><a href="#" class="footer-link">عن المكتبة</a></li>
+                        <li><a href="#" class="footer-link">تواصل معنا</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links-group">
+                    <h4 class="footer-title">المزيد</h4>
+                    <ul class="footer-links">
+                        <li><a href="category.html?id=history" class="footer-link">التاريخ</a></li>
+                        <li><a href="category.html?id=ethics" class="footer-link">الأخلاق</a></li>
+                        <li><a href="category.html?id=dua" class="footer-link">الأدعية</a></li>
+                        <li><a href="category.html?id=usul" class="footer-link">أصول الفقه</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>جميع الحقوق محفوظة © 2024 المكتبة الإسلامية</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- السكربتات -->
+    <script src="js/data.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/ai-features.js"></script>
+    <script src="js/context-menu.js"></script>
+    <script src="js/text-finder.js"></script>
+    <script src="js/smart-fetch.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // ربط البحث في قسم البطل
+        document.getElementById('hero-search')?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const query = e.target.value.trim();
+                if (query) {
+                    window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+                }
+            }
+        });
+    </script>
+
+    <!-- أنماط إضافية للصفحة الرئيسية -->
+    <style>
+        /* قسم البطل */
+        .hero {
+            position: relative;
+            padding: 120px 0 80px;
+            background: var(--bg-secondary);
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.2;
+        }
+
+        .hero-title-accent {
+            color: var(--accent-primary);
+            display: block;
+        }
+
+        .hero-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xl);
+            line-height: 1.8;
+        }
+
+        .hero .search-bar {
+            max-width: 500px;
+            margin: 0 auto var(--spacing-xl);
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-2xl);
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            display: block;
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .hero-stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+
+        /* قسم التصنيفات */
+        .categories-section {
+            padding: var(--spacing-3xl) 0;
+            background: var(--bg-primary);
+        }
+
+        .categories-grid {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: var(--spacing-lg) !important;
+        }
+
+        @media (max-width: 992px) {
+            .categories-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: var(--spacing-md) !important;
+            }
+        }
+
+        /* قسم الكتب المميزة */
+        .featured-section {
+            padding: var(--spacing-3xl) 0;
+            background: var(--bg-secondary);
+        }
+
+        /* قسم الميزات */
+        .features-section {
+            padding: var(--spacing-3xl) 0;
+            background: var(--bg-primary);
+        }
+
+        .features-grid {
+            gap: var(--spacing-lg);
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            text-align: center;
+            transition: all var(--transition-normal);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .feature-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .feature-desc {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        /* قسم الدعوة للعمل */
+        .cta-section {
+            padding: var(--spacing-3xl) 0;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-dark) 100%);
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: var(--font-size-3xl);
+            color: white;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .cta-text {
+            font-family: var(--font-arabic);
+            font-size: var(--font-size-xl);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: var(--spacing-xl);
+            line-height: 2;
+        }
+
+        .cta-attribution {
+            display: block;
+            font-size: var(--font-size-base);
+            opacity: 0.8;
+            margin-top: var(--spacing-sm);
+        }
+
+        /* متجاوب */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 100px 0 60px;
+            }
+
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: var(--spacing-lg);
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>
