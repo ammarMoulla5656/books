@@ -342,23 +342,10 @@ const SmartContextMenu = {
      * مناقشة مع AI
      */
     aiChat(text) {
-        if (window.AIFeatures) {
-            // فتح نافذة الدردشة مع السؤال الأولي
-            window.AIFeatures.openModal('chat', 'المحادثة الذكية');
-
-            const chatContent = `
-                <div class="ai-chat">
-                    <div class="chat-message ai-message">
-                        <p>👤 <strong>أنت:</strong> ${text}</p>
-                    </div>
-                    <div class="chat-loading">
-                        <div class="spinner spinner-sm"></div>
-                        <p>جاري المعالجة...</p>
-                    </div>
-                </div>
-            `;
-
-            window.AIFeatures.setModalContent(chatContent);
+        if (window.AIChat) {
+            window.AIChat.open(text);
+        } else {
+            this.showToast('ميزة الدردشة غير متاحة');
         }
     },
 
