@@ -1,0 +1,449 @@
+/* ===================================
+   محرر التقارير - المكتبة الإسلامية
+   =================================== */
+
+.report-editor-page {
+    background: var(--bg-primary);
+}
+
+.main-content {
+    padding-top: calc(var(--header-height) + var(--spacing-xl));
+    min-height: calc(100vh - var(--header-height));
+}
+
+/* حاوية المحرر */
+.report-editor-container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: var(--spacing-xl);
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+}
+
+/* العمود الجانبي */
+.report-sidebar {
+    grid-column: 1;
+    height: 100%;
+}
+
+.sidebar-sticky {
+    position: sticky;
+    top: calc(var(--header-height) + var(--spacing-xl));
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    max-height: calc(100vh - var(--header-height) - var(--spacing-2xl));
+}
+
+.sidebar-header {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+}
+
+/* لوحة معلومات التقرير */
+.report-info-panel {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+}
+
+.form-input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+    transition: all var(--transition-fast);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+/* لوحة الاقتباسات */
+.quotes-panel {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.quotes-panel h3 {
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-md) 0;
+}
+
+.quotes-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.quote-item {
+    padding: var(--spacing-md);
+    background: var(--bg-tertiary);
+    border-right: 3px solid var(--accent-primary);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    line-height: 1.5;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.quote-item:hover {
+    background: var(--accent-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.empty-state {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    text-align: center;
+    padding: var(--spacing-md);
+    margin: 0;
+}
+
+/* إجراءات العمود الجانبي */
+.sidebar-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.sidebar-actions .btn {
+    flex: 1;
+    font-size: var(--font-size-sm);
+}
+
+/* منطقة التحرير الرئيسية */
+.report-editor-main {
+    grid-column: 2;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* شريط الأدوات */
+.editor-toolbar {
+    display: flex;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.toolbar-group {
+    display: flex;
+    gap: var(--spacing-xs);
+    border-right: 1px solid var(--border-color);
+    padding-right: var(--spacing-lg);
+}
+
+.toolbar-group:last-of-type {
+    border-right: none;
+    padding-right: 0;
+}
+
+.toolbar-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.toolbar-btn:hover {
+    background: var(--accent-light);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.toolbar-btn:active {
+    transform: scale(0.95);
+}
+
+.toolbar-spacer {
+    flex: 1;
+}
+
+/* حقل التحرير */
+.editor-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.editor-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+}
+
+.report-textarea {
+    flex: 1;
+    padding: var(--spacing-lg);
+    border: none;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    line-height: 1.8;
+    resize: none;
+}
+
+.report-textarea:focus {
+    outline: none;
+}
+
+.report-textarea::placeholder {
+    color: var(--text-muted);
+}
+
+/* معاينة التقرير */
+.report-preview {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+    color: var(--text-primary);
+}
+
+.report-preview h2 {
+    font-size: var(--font-size-xl);
+    margin: var(--spacing-lg) 0 var(--spacing-md) 0;
+}
+
+.report-preview p {
+    margin: 0 0 var(--spacing-md) 0;
+    line-height: 1.8;
+}
+
+.report-preview strong {
+    font-weight: 600;
+    color: var(--accent-primary);
+}
+
+.report-preview em {
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.report-preview blockquote {
+    margin: var(--spacing-md) 0;
+    padding: var(--spacing-md) 0 var(--spacing-md) var(--spacing-lg);
+    border-right: 4px solid var(--accent-primary);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+}
+
+/* شريط الحالة */
+.editor-status {
+    display: flex;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--bg-tertiary);
+    border-top: 1px solid var(--border-color);
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.status-icon {
+    font-size: 14px;
+}
+
+/* أزرار الإجراءات الرئيسية */
+.editor-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.editor-actions .btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
+/* متجاوب */
+@media (max-width: 1024px) {
+    .report-editor-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .sidebar-sticky {
+        position: static;
+        max-height: none;
+    }
+
+    .editor-toolbar {
+        gap: var(--spacing-md);
+    }
+
+    .toolbar-group {
+        padding-right: var(--spacing-md);
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding: var(--spacing-md);
+    }
+
+    .report-editor-container {
+        padding: 0;
+    }
+
+    .sidebar-sticky {
+        border-radius: var(--radius-lg);
+    }
+
+    .report-editor-main {
+        border-radius: var(--radius-lg);
+    }
+
+    .editor-toolbar {
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+    }
+
+    .toolbar-group {
+        border-right: none;
+        padding-right: 0;
+    }
+
+    .toolbar-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .editor-status {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    .editor-actions {
+        flex-direction: column;
+        justify-content: stretch;
+    }
+
+    .editor-actions .btn {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .report-editor-container {
+        gap: 0;
+    }
+
+    .sidebar-sticky {
+        border-radius: 0;
+        padding: var(--spacing-md);
+    }
+
+    .report-editor-main {
+        border-radius: 0;
+    }
+
+    .editor-toolbar {
+        overflow-x: auto;
+        padding: var(--spacing-sm);
+    }
+
+    .toolbar-group {
+        flex-shrink: 0;
+    }
+
+    .report-textarea {
+        padding: var(--spacing-md);
+        font-size: 16px; /* منع الزوم التلقائي على iOS */
+    }
+
+    .editor-status {
+        font-size: var(--font-size-xs);
+    }
+
+    .editor-actions {
+        gap: var(--spacing-sm);
+    }
+
+    .editor-actions .btn {
+        font-size: var(--font-size-xs);
+    }
+}
+
+/* شريط التمرير المخصص */
+.sidebar-sticky::-webkit-scrollbar,
+.quotes-list::-webkit-scrollbar,
+.report-preview::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-sticky::-webkit-scrollbar-track,
+.quotes-list::-webkit-scrollbar-track,
+.report-preview::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-sticky::-webkit-scrollbar-thumb,
+.quotes-list::-webkit-scrollbar-thumb,
+.report-preview::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.sidebar-sticky::-webkit-scrollbar-thumb:hover,
+.quotes-list::-webkit-scrollbar-thumb:hover,
+.report-preview::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}

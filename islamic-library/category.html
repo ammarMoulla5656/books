@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="تصفح كتب التصنيف في المكتبة الإسلامية">
+    <meta name="theme-color" content="#f5f5f0">
+
+    <title>التصنيف - المكتبة الإسلامية</title>
+
+    <!-- الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- الأنماط -->
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/context-menu.css">
+    <link rel="stylesheet" href="css/text-finder.css">
+    <link rel="stylesheet" href="css/smart-fetch.css">
+    <link rel="stylesheet" href="css/ai-chat.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- أيقونة الموقع -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="navbar-brand">
+                <span class="navbar-logo">📚</span>
+                <span>المكتبة الإسلامية</span>
+            </a>
+
+            <nav class="navbar-nav">
+                <a href="index.html" class="nav-link">الرئيسية</a>
+                <a href="category.html?id=fiqh" class="nav-link">الفقه</a>
+                <a href="category.html?id=aqeedah" class="nav-link">العقائد</a>
+                <a href="category.html?id=hadith" class="nav-link">الحديث</a>
+                <a href="search.html" class="nav-link">البحث</a>
+                <a href="report-editor.html" class="nav-link">📝 التقارير</a>
+            </nav>
+
+            <div class="navbar-actions">
+                <button class="theme-toggle" aria-label="تبديل الثيم">
+                    <span class="theme-toggle-sun">☀️</span>
+                    <span class="theme-toggle-moon">🌙</span>
+                </button>
+
+                <button class="navbar-toggle" aria-label="القائمة">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb">
+                <div class="breadcrumb-item">
+                    <a href="index.html" class="breadcrumb-link">الرئيسية</a>
+                    <span class="breadcrumb-separator">/</span>
+                </div>
+                <div class="breadcrumb-item">
+                    <span class="breadcrumb-current" id="breadcrumb-category">التصنيف</span>
+                </div>
+            </nav>
+
+            <!-- عنوان التصنيف -->
+            <div class="category-header">
+                <div class="category-header-content">
+                    <h1 class="category-title" id="category-title">التصنيف</h1>
+                    <p class="category-description" id="category-description">وصف التصنيف</p>
+                    <div class="category-meta">
+                        <span class="category-count" id="category-count">0 كتاب</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الفلترة والترتيب -->
+            <div class="category-toolbar">
+                <div class="toolbar-right">
+                    <div class="filter-group">
+                        <label class="filter-label">ترتيب:</label>
+                        <select class="filter-select" id="sort-select">
+                            <option value="popular">الأكثر شهرة</option>
+                            <option value="newest">الأحدث</option>
+                            <option value="title">الاسم</option>
+                            <option value="author">المؤلف</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="toolbar-left">
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="grid" title="عرض شبكي">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                        </button>
+                        <button class="view-btn" data-view="list" title="عرض قائمة">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6"></line>
+                                <line x1="8" y1="12" x2="21" y2="12"></line>
+                                <line x1="8" y1="18" x2="21" y2="18"></line>
+                                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- شبكة الكتب -->
+            <div class="category-books grid-auto" id="category-books">
+                <!-- سيتم ملؤها بواسطة JavaScript -->
+            </div>
+
+            <!-- التصفح -->
+            <div class="pagination" id="pagination">
+                <!-- سيتم ملؤها بواسطة JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>جميع الحقوق محفوظة © 2024 المكتبة الإسلامية</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- السكربتات -->
+    <script src="js/data.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/ai-features.js"></script>
+    <script src="js/context-menu.js"></script>
+    <script src="js/text-finder.js"></script>
+    <script src="js/smart-fetch.js"></script>
+    <script src="js/ai-chat.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // تبديل طريقة العرض
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const view = btn.dataset.view;
+                const container = document.getElementById('category-books');
+
+                if (view === 'list') {
+                    container.classList.remove('grid-auto');
+                    container.classList.add('list-view');
+                } else {
+                    container.classList.add('grid-auto');
+                    container.classList.remove('list-view');
+                }
+            });
+        });
+
+        // تحديث Breadcrumb
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const categoryId = params.get('id');
+
+            if (categoryId && window.LibraryData) {
+                const category = window.LibraryData.getCategoryById(categoryId);
+                if (category) {
+                    document.getElementById('breadcrumb-category').textContent = category.name;
+
+                    // تحديد الرابط النشط في شريط التنقل
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        if (link.href.includes(`id=${categoryId}`)) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+
+    <!-- أنماط إضافية -->
+    <style>
+        .main-content {
+            padding-top: calc(var(--header-height) + var(--spacing-xl));
+            padding-bottom: var(--spacing-3xl);
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        /* عنوان التصنيف */
+        .category-header {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            margin-bottom: var(--spacing-xl);
+            border: 1px solid var(--border-color);
+        }
+
+        .category-header-content {
+            max-width: 600px;
+        }
+
+        .category-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .category-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.8;
+        }
+
+        .category-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .category-count {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: var(--accent-light);
+            color: var(--accent-primary);
+            font-weight: 600;
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+        }
+
+        /* شريط الأدوات */
+        .category-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .filter-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .filter-select {
+            padding: var(--spacing-xs) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            cursor: pointer;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .view-btn {
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+
+        .view-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .view-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        /* عرض القائمة */
+        .list-view {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .list-view .book-card {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .list-view .book-card-cover {
+            width: 120px;
+            height: 160px;
+            flex-shrink: 0;
+        }
+
+        .list-view .book-card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* متجاوب */
+        @media (max-width: 768px) {
+            .category-toolbar {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+
+            .toolbar-right,
+            .toolbar-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .list-view .book-card {
+                flex-direction: column;
+            }
+
+            .list-view .book-card-cover {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</body>
+</html>
