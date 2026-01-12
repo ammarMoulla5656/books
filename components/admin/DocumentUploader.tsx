@@ -72,6 +72,15 @@ export default function DocumentUploader() {
     }
 
     setFile(selectedFile);
+
+    // Auto-disable AI processing for ABX files
+    if (fileExtension === '.abx') {
+      setOptions({
+        useOcr: false,
+        useAiParsing: false,
+        aiProvider: 'local',
+      });
+    }
   };
 
   // Handle file input change
@@ -94,7 +103,11 @@ export default function DocumentUploader() {
       formData.append('file', file);
       formData.append('options', JSON.stringify(options));
 
-      const response = await fetch('/api/admin/documents', {
+      // Check if ABX file - use direct upload endpoint
+      const isABX = file.name.endsWith('.abx');
+      const endpoint = isABX ? '/api/admin/books/abx' : '/api/admin/documents';
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         body: formData,
       });
@@ -105,8 +118,14 @@ export default function DocumentUploader() {
         throw new Error(data.error || 'فشل رفع الملف');
       }
 
-      // Redirect to progress page
-      router.push(`/secret-admin-panel-xyz/books/upload/${data.uploadId}/progress`);
+      if (isABX) {
+        // For ABX files, show success and redirect to books list
+        alert(`✅ تم رفع الكتاب بنجاح!\n\nالعنوان: ${data.book.title}\nالمؤلف: ${data.book.author}\nالصفحات: ${data.book.pages}`);
+        router.push('/secret-admin-panel-xyz/books');
+      } else {
+        // For PDF/DOCX, redirect to progress page
+        router.push(`/secret-admin-panel-xyz/books/upload/${data.uploadId}/progress`);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'حدث خطأ أثناء الرفع');
       setIsUploading(false);
@@ -141,7 +160,7 @@ export default function DocumentUploader() {
         <input
           ref={fileInputRef}
           type="file"
-          accept=".pdf,.docx"
+          accept=".pdf,.docx,.abx"
           onChange={handleFileChange}
           className="hidden"
         />
@@ -188,94 +207,113 @@ export default function DocumentUploader() {
         </div>
       )}
 
-      {/* Processing Options */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
-          خيارات المعالجة
-        </h3>
-
-        <div className="space-y-4">
-          {/* OCR Option */}
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={options.useOcr}
-              onChange={(e) => setOptions({ ...options, useOcr: e.target.checked })}
-              className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
-            />
+      {/* ABX File Notice */}
+      {file && file.name.endsWith('.abx') && (
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+          <div className="flex items-center gap-3">
+            <div className="text-2xl">⚡</div>
             <div>
-              <span className="font-medium text-gray-700 dark:text-gray-200">
-                استخدام OCR للصفحات المصورة
-              </span>
-              <p className="text-sm text-gray-500">
-                تفعيل هذا الخيار إذا كان الكتاب عبارة عن صور
+              <h4 className="font-semibold text-blue-800 dark:text-blue-200 arabic-text">
+                ملف ABX - رفع مباشر
+              </h4>
+              <p className="text-sm text-blue-700 dark:text-blue-300 arabic-text">
+                سيتم رفع هذا الملف مباشرة بدون معالجة AI لأنه بتنسيق جاهز ومنسق مسبقاً
               </p>
             </div>
-          </label>
-
-          {/* AI Parsing Option */}
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={options.useAiParsing}
-              onChange={(e) => setOptions({ ...options, useAiParsing: e.target.checked })}
-              className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
-            />
-            <div>
-              <span className="font-medium text-gray-700 dark:text-gray-200">
-                استخدام الذكاء الاصطناعي لفهم البنية
-              </span>
-              <p className="text-sm text-gray-500">
-                يساعد في كشف الفهرس وتقسيم المحتوى بدقة أعلى
-              </p>
-            </div>
-          </label>
-
-          {/* AI Provider Selection */}
-          {options.useAiParsing && (
-            <div className="mr-8 space-y-2">
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                مزود الذكاء الاصطناعي:
-              </p>
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="aiProvider"
-                    value="local"
-                    checked={options.aiProvider === 'local'}
-                    onChange={() => setOptions({ ...options, aiProvider: 'local' })}
-                    className="text-emerald-600 focus:ring-emerald-500"
-                  />
-                  <span className="text-gray-700 dark:text-gray-200">محلي (Ollama) - مجاني</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="aiProvider"
-                    value="claude"
-                    checked={options.aiProvider === 'claude'}
-                    onChange={() => setOptions({ ...options, aiProvider: 'claude' })}
-                    className="text-emerald-600 focus:ring-emerald-500"
-                  />
-                  <span className="text-gray-700 dark:text-gray-200">Claude API - دقة أعلى</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="aiProvider"
-                    value="openai"
-                    checked={options.aiProvider === 'openai'}
-                    onChange={() => setOptions({ ...options, aiProvider: 'openai' })}
-                    className="text-emerald-600 focus:ring-emerald-500"
-                  />
-                  <span className="text-gray-700 dark:text-gray-200">OpenAI GPT-4</span>
-                </label>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Processing Options - Only show for non-ABX files */}
+      {file && !file.name.endsWith('.abx') && (
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
+            خيارات المعالجة
+          </h3>
+
+          <div className="space-y-4">
+            {/* OCR Option */}
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={options.useOcr}
+                onChange={(e) => setOptions({ ...options, useOcr: e.target.checked })}
+                className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+              />
+              <div>
+                <span className="font-medium text-gray-700 dark:text-gray-200">
+                  استخدام OCR للصفحات المصورة
+                </span>
+                <p className="text-sm text-gray-500">
+                  تفعيل هذا الخيار إذا كان الكتاب عبارة عن صور
+                </p>
+              </div>
+            </label>
+
+            {/* AI Parsing Option */}
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={options.useAiParsing}
+                onChange={(e) => setOptions({ ...options, useAiParsing: e.target.checked })}
+                className="w-5 h-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+              />
+              <div>
+                <span className="font-medium text-gray-700 dark:text-gray-200">
+                  استخدام الذكاء الاصطناعي لفهم البنية
+                </span>
+                <p className="text-sm text-gray-500">
+                  يساعد في كشف الفهرس وتقسيم المحتوى بدقة أعلى
+                </p>
+              </div>
+            </label>
+
+            {/* AI Provider Selection */}
+            {options.useAiParsing && (
+              <div className="mr-8 space-y-2">
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  مزود الذكاء الاصطناعي:
+                </p>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="aiProvider"
+                      value="local"
+                      checked={options.aiProvider === 'local'}
+                      onChange={() => setOptions({ ...options, aiProvider: 'local' })}
+                      className="text-emerald-600 focus:ring-emerald-500"
+                    />
+                    <span className="text-gray-700 dark:text-gray-200">محلي (Ollama) - مجاني</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="aiProvider"
+                      value="claude"
+                      checked={options.aiProvider === 'claude'}
+                      onChange={() => setOptions({ ...options, aiProvider: 'claude' })}
+                      className="text-emerald-600 focus:ring-emerald-500"
+                    />
+                    <span className="text-gray-700 dark:text-gray-200">Claude API - دقة أعلى</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="aiProvider"
+                      value="openai"
+                      checked={options.aiProvider === 'openai'}
+                      onChange={() => setOptions({ ...options, aiProvider: 'openai' })}
+                      className="text-emerald-600 focus:ring-emerald-500"
+                    />
+                    <span className="text-gray-700 dark:text-gray-200">OpenAI GPT-4</span>
+                  </label>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Upload Button */}
       <button

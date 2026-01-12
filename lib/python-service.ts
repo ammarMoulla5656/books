@@ -3,7 +3,7 @@
  * Handles communication between Next.js and the Python document processing service.
  */
 
-const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL || 'http://localhost:8000';
+const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL || 'http://localhost:5000';
 
 // ============================================
 // TYPES

@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     # SERVER
     # ============================================
     HOST: str = "0.0.0.0"
-    PORT: int = 8000
+    PORT: int = 5000
 
     # ============================================
     # PATHS
@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     # ============================================
     # DATABASE (Same as Next.js)
     # ============================================
-    DATABASE_URL: str = "postgresql://user:password@localhost:5432/islamic_library"
+    DATABASE_URL: str = "postgresql://postgres:iioopp00@localhost:5432/islamic_library"
 
     # ============================================
     # AI PROVIDERS
@@ -92,6 +92,7 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = True
+        extra = "ignore"  # Ignore extra environment variables not defined in Settings
 
 
 # Global settings instance

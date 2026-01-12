@@ -43,7 +43,19 @@
       "Bash(__NEW_LINE_708cf33941b5703a__ echo \"\")",
       "Bash(python:*)",
       "Bash(echo \"Python service: OK\" echo \"\" echo \"=== الصفحات المتاحة ===\" echo \"Homepage: http://localhost:3000\" echo \"Admin: http://localhost:3000/secret-admin-panel-xyz\" echo \"Books: http://localhost:3000/secret-admin-panel-xyz/books\" echo \"Upload: http://localhost:3000/secret-admin-panel-xyz/books/upload\")",
-      "Bash(echo \"=== المكتبة الإسلامية ===\" cd \"f:\\\\root ammar\\\\project\\\\conductor_playground\\\\algiers\\\\islamic-library\" echo \"\" echo \"صفحات HTML:\" ls -1 *.html echo \"\" echo \"عدد ملفات CSS:\" ls -1 css/*.css)"
+      "Bash(echo \"=== المكتبة الإسلامية ===\" cd \"f:\\\\root ammar\\\\project\\\\conductor_playground\\\\algiers\\\\islamic-library\" echo \"\" echo \"صفحات HTML:\" ls -1 *.html echo \"\" echo \"عدد ملفات CSS:\" ls -1 css/*.css)",
+      "Bash(__NEW_LINE_09206b01ea2c8ce6__ echo \"\")",
+      "Bash(__NEW_LINE_1adab388161c065e__ echo \"\")",
+      "Bash(echo:*)",
+      "Bash(echo \"   🔍 Health Check:        curl http://127.0.0.1:5000/health\")",
+      "Bash(npm ls:*)",
+      "Bash(ls:*)",
+      "Bash(cmd /c \"taskkill /F /PID 48680\")",
+      "Bash(powershell \"Stop-Process -Name node -Force\")",
+      "Bash(powershell \"Copy-Item -Path ''f:\\\\root ammar\\\\project\\\\conductor_playground\\\\algiers\\\\islamic-library\\\\*'' -Destination ''f:\\\\root ammar\\\\project\\\\conductor_playground\\\\algiers\\\\public\\\\islamic-library\\\\'' -Recurse -Force\")",
+      "Bash(powershell \"Stop-Process -Id 42308 -Force\")",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)"
     ]
   }
 }

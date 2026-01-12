@@ -1,0 +1,22 @@
+{
+  "name": "المكتبة الإسلامية",
+  "short_name": "المكتبة",
+  "description": "مكتبة إسلامية شاملة مدعومة بالذكاء الاصطناعي",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f1e8",
+  "theme_color": "#1a5f3f",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "books", "reference"],
+  "screenshots": []
+}

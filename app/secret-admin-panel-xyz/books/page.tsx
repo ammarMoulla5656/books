@@ -14,6 +14,7 @@ import {
   FiUpload,
 } from 'react-icons/fi';
 import type { Book } from '@/lib/types';
+import Navigation from '@/components/Navigation';
 
 export default function AdminBooksPage() {
   const [books, setBooks] = useState<Book[]>([]);
@@ -91,25 +92,28 @@ export default function AdminBooksPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-[#f5f1e8] to-[#e5dcc8] dark:from-[#0f1419] dark:via-[#1a2028] dark:to-[#0f1419]">
-      {/* Header */}
-      <header className="bg-white dark:bg-[#1a2028] shadow-lg border-b-2 border-[#d4af37]/20 sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
+      {/* Use main site Navigation */}
+      <Navigation />
+
+      {/* Admin Sub-header */}
+      <div className="bg-[#1a5f3f] dark:bg-[#0d1419] border-b-2 border-[#d4af37]/30">
+        <div className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Link
                 href="/secret-admin-panel-xyz/dashboard"
-                className="p-2 rounded-lg hover:bg-[#f5f1e8] dark:hover:bg-[#2d3748] transition-colors text-[#1a5f3f] dark:text-[#d4af37]"
+                className="p-2 rounded-lg hover:bg-[#d4af37]/20 transition-colors text-[#d4af37]"
               >
-                <FiArrowLeft className="w-6 h-6" />
+                <FiArrowLeft className="w-5 h-5" />
               </Link>
-              <div className="p-3 rounded-lg bg-gradient-to-br from-[#1a5f3f] to-[#2d7a54]">
-                <FiBook className="w-6 h-6 text-white" />
+              <div className="p-2 rounded-lg bg-[#d4af37]/20">
+                <FiBook className="w-5 h-5 text-[#d4af37]" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-[#1a5f3f] dark:text-[#d4af37] arabic-text">
+                <h2 className="text-lg font-bold text-white arabic-text">
                   إدارة الكتب
-                </h1>
-                <p className="text-sm text-[#2d7a54] dark:text-[#e8dcc4]/70 arabic-text">
+                </h2>
+                <p className="text-sm text-[#d4af37]/80 arabic-text">
                   {filteredBooks.length} كتاب
                 </p>
               </div>
@@ -117,22 +121,22 @@ export default function AdminBooksPage() {
             <div className="flex items-center gap-3">
               <Link
                 href="/secret-admin-panel-xyz/books/upload"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-white transition-colors"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border-2 border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-white transition-colors text-sm"
               >
-                <FiUpload className="w-5 h-5" />
+                <FiUpload className="w-4 h-4" />
                 <span className="arabic-text">رفع من ملف</span>
               </Link>
               <Link
                 href="/secret-admin-panel-xyz/books/new"
-                className="islamic-button flex items-center gap-2"
+                className="islamic-button flex items-center gap-2 text-sm"
               >
-                <FiPlus className="w-5 h-5" />
+                <FiPlus className="w-4 h-4" />
                 <span className="arabic-text">إضافة كتاب جديد</span>
               </Link>
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       <div className="container mx-auto px-6 py-8">
         {/* Search Bar */}

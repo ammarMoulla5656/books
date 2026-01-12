@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="قراءة الكتاب في المكتبة الإسلامية">
+    <meta name="theme-color" content="#f5f5f0">
+
+    <title>قراءة الكتاب - المكتبة الإسلامية</title>
+
+    <!-- الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- الأنماط -->
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/context-menu.css">
+    <link rel="stylesheet" href="css/text-finder.css">
+    <link rel="stylesheet" href="css/smart-fetch.css">
+    <link rel="stylesheet" href="css/ai-chat.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- أيقونة الموقع -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body class="book-reader-page">
+    <!-- شريط تقدم القراءة -->
+    <div class="reading-progress">
+        <div class="reading-progress-bar"></div>
+    </div>
+
+    <!-- شريط التنقل -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-right">
+                <a href="index.html" class="navbar-brand">
+                    <span class="navbar-logo">📚</span>
+                    <span class="navbar-brand-text">المكتبة الإسلامية</span>
+                </a>
+
+                <div class="book-info-mini" id="book-info-mini">
+                    <span class="book-title-mini">اسم الكتاب</span>
+                </div>
+            </div>
+
+            <div class="navbar-actions">
+                <button class="btn btn-ghost btn-icon" data-action="search-book" title="بحث في الكتاب">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+
+                <button class="btn btn-ghost btn-icon" data-action="bookmark" title="إضافة علامة">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </button>
+
+                <button class="theme-toggle" aria-label="تبديل الثيم">
+                    <span class="theme-toggle-sun">☀️</span>
+                    <span class="theme-toggle-moon">🌙</span>
+                </button>
+
+                <button class="btn btn-ghost btn-icon sidebar-toggle-btn" data-action="toggle-sidebar" title="الفهرس">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="book-layout">
+        <!-- الشريط الجانبي - الفهرس -->
+        <aside class="book-sidebar" id="book-sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">فهرس الكتاب</h2>
+                <button class="btn btn-ghost btn-icon-sm sidebar-close" data-action="toggle-sidebar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="sidebar-search">
+                <input type="text" class="input" placeholder="ابحث في الفهرس..." id="toc-search">
+            </div>
+
+            <div class="sidebar-content">
+                <nav class="book-toc" id="book-toc">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </nav>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="book-progress">
+                    <div class="progress-label">تقدم القراءة</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text">0%</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- منطقة القراءة -->
+        <main class="book-main">
+            <div class="book-container">
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb">
+                    <div class="breadcrumb-item">
+                        <a href="index.html" class="breadcrumb-link">الرئيسية</a>
+                        <span class="breadcrumb-separator">/</span>
+                    </div>
+                    <div class="breadcrumb-item">
+                        <a href="#" class="breadcrumb-link" id="breadcrumb-category">التصنيف</a>
+                        <span class="breadcrumb-separator">/</span>
+                    </div>
+                    <div class="breadcrumb-item">
+                        <span class="breadcrumb-current" id="breadcrumb-book">الكتاب</span>
+                    </div>
+                </nav>
+
+                <!-- محتوى الكتاب -->
+                <article class="book-content reading-content" id="book-content">
+                    <div class="book-loading">
+                        <div class="spinner spinner-lg"></div>
+                        <p>جاري تحميل الكتاب...</p>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+
+    <!-- شريط الأدوات -->
+    <div class="toolbar">
+        <button class="toolbar-btn" data-action="font-decrease" title="تصغير الخط">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+        </button>
+
+        <button class="toolbar-btn" data-action="font-increase" title="تكبير الخط">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="11" y1="8" x2="11" y2="14"></line>
+                <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+        </button>
+
+        <div class="toolbar-divider"></div>
+
+        <button class="toolbar-btn" data-action="summarize" title="تلخيص بالذكاء الاصطناعي">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+        </button>
+
+        <button class="toolbar-btn" data-action="smart-search" title="بحث ذكي" onclick="AIFeatures.smartSearch(prompt('ماذا تريد البحث عنه؟'))">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a4 4 0 0 1 4 4v1a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"></path>
+                <path d="M6 8a6 6 0 0 0 12 0"></path>
+                <circle cx="12" cy="17" r="4"></circle>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+            </svg>
+        </button>
+
+        <div class="toolbar-divider"></div>
+
+        <button class="toolbar-btn" data-action="bookmark" title="علامة مرجعية">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- السكربتات -->
+    <script src="js/data.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/ai-features.js"></script>
+    <script src="js/context-menu.js"></script>
+    <script src="js/text-finder.js"></script>
+    <script src="js/smart-fetch.js"></script>
+    <script src="js/ai-chat.js"></script>
+    <script src="js/book-reader.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // البحث في الفهرس
+        document.getElementById('toc-search')?.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.toc-section, .toc-chapter-title');
+
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                const parent = item.closest('.toc-chapter');
+
+                if (query === '') {
+                    item.style.display = '';
+                    if (parent) parent.style.display = '';
+                } else if (text.includes(query)) {
+                    item.style.display = '';
+                    if (parent) {
+                        parent.style.display = '';
+                        parent.classList.add('expanded');
+                    }
+                } else {
+                    if (item.classList.contains('toc-section')) {
+                        item.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        // تبديل الشريط الجانبي
+        document.querySelectorAll('[data-action="toggle-sidebar"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('book-sidebar').classList.toggle('open');
+            });
+        });
+
+        // إغلاق الشريط الجانبي عند النقر خارجه (على الموبايل)
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('book-sidebar');
+            const toggleBtns = document.querySelectorAll('[data-action="toggle-sidebar"]');
+
+            let isToggleBtn = false;
+            toggleBtns.forEach(btn => {
+                if (btn.contains(e.target)) isToggleBtn = true;
+            });
+
+            if (!sidebar.contains(e.target) && !isToggleBtn && window.innerWidth <= 992) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+
+    <!-- أنماط صفحة القراءة -->
+    <style>
+        .book-reader-page {
+            overflow-x: hidden;
+        }
+
+        /* تخطيط الصفحة */
+        .book-layout {
+            display: flex;
+            min-height: calc(100vh - var(--header-height));
+            padding-top: var(--header-height);
+        }
+
+        /* الشريط الجانبي */
+        .book-sidebar {
+            position: fixed;
+            top: var(--header-height);
+            right: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--header-height));
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--sidebar-border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform var(--transition-normal);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--sidebar-border);
+        }
+
+        .sidebar-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .sidebar-close {
+            display: none;
+        }
+
+        .sidebar-search {
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--sidebar-border);
+        }
+
+        .sidebar-search .input {
+            width: 100%;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-md);
+        }
+
+        .sidebar-footer {
+            padding: var(--spacing-md);
+            border-top: 1px solid var(--sidebar-border);
+        }
+
+        .book-progress {
+            text-align: center;
+        }
+
+        .progress-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .progress-text {
+            font-size: var(--font-size-sm);
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-top: var(--spacing-xs);
+        }
+
+        /* منطقة القراءة */
+        .book-main {
+            flex: 1;
+            margin-right: var(--sidebar-width);
+            background: var(--bg-primary);
+        }
+
+        .book-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-xl);
+        }
+
+        .book-content {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-2xl);
+            box-shadow: var(--shadow-sm);
+            min-height: 60vh;
+        }
+
+        .book-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            color: var(--text-muted);
+        }
+
+        .book-loading p {
+            margin-top: var(--spacing-md);
+        }
+
+        /* عنوان المحتوى */
+        .content-header {
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .content-title {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .content-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+
+        /* محتوى القراءة */
+        .content-body {
+            font-family: var(--font-arabic);
+            font-size: 1.25rem;
+            line-height: 2.2;
+            color: var(--text-primary);
+        }
+
+        .content-body p {
+            margin-bottom: var(--spacing-lg);
+            text-align: justify;
+            text-indent: 2em;
+        }
+
+        /* التنقل بين الصفحات */
+        .content-navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .content-navigation .btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .content-navigation .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* معلومات الكتاب المصغرة */
+        .book-info-mini {
+            display: none;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            font-size: var(--font-size-sm);
+        }
+
+        .navbar.scrolled .book-info-mini {
+            display: flex;
+        }
+
+        .book-title-mini {
+            color: var(--text-primary);
+            font-weight: 500;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* حالة الخطأ */
+        .error-state {
+            text-align: center;
+            padding: var(--spacing-3xl);
+        }
+
+        .error-icon {
+            font-size: 64px;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .error-state h3 {
+            margin-bottom: var(--spacing-lg);
+            color: var(--text-primary);
+        }
+
+        /* متجاوب */
+        @media (max-width: 992px) {
+            .book-sidebar {
+                transform: translateX(100%);
+            }
+
+            .book-sidebar.open {
+                transform: translateX(0);
+                box-shadow: var(--shadow-xl);
+            }
+
+            .sidebar-close {
+                display: flex;
+            }
+
+            .book-main {
+                margin-right: 0;
+            }
+
+            .sidebar-toggle-btn {
+                display: flex;
+            }
+
+            .navbar-brand-text {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .book-container {
+                padding: var(--spacing-md);
+            }
+
+            .book-content {
+                padding: var(--spacing-lg);
+                border-radius: var(--radius-lg);
+            }
+
+            .content-body {
+                font-size: 1.1rem;
+                line-height: 2;
+            }
+
+            .content-navigation {
+                flex-direction: column;
+            }
+
+            .content-navigation .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .toolbar {
+                width: calc(100% - 20px);
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .book-info-mini {
+                display: none !important;
+            }
+
+            .toolbar-btn:not(:nth-child(-n+3)):not(:last-child) {
+                display: none;
+            }
+        }
+    </style>
+</body>
+</html>
