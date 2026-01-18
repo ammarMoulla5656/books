@@ -1,0 +1,537 @@
+/* ===================================
+   التصميم المتجاوب - المكتبة الإسلامية
+   =================================== */
+
+/* الشاشات الكبيرة جداً */
+@media (min-width: 1600px) {
+    :root {
+        --container-max: 1500px;
+    }
+}
+
+/* الشاشات الكبيرة (أجهزة الكمبيوتر) */
+@media (max-width: 1400px) {
+    :root {
+        --container-max: 1200px;
+    }
+}
+
+/* الشاشات المتوسطة الكبيرة */
+@media (max-width: 1200px) {
+    :root {
+        --container-max: 992px;
+        --sidebar-width: 260px;
+    }
+
+    .grid-4 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .hero-title {
+        font-size: var(--font-size-4xl);
+    }
+}
+
+/* الشاشات المتوسطة (تابلت أفقي) */
+@media (max-width: 992px) {
+    :root {
+        --header-height: 60px;
+        --sidebar-width: 240px;
+    }
+
+    .container {
+        padding: 0 var(--spacing-md);
+    }
+
+    .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* إخفاء القائمة الأفقية وإظهار زر القائمة */
+    .navbar-nav {
+        display: none;
+    }
+
+    .navbar-toggle {
+        display: flex;
+    }
+
+    /* القائمة المنسدلة للموبايل */
+    .mobile-menu {
+        position: fixed;
+        top: var(--header-height);
+        right: 0;
+        width: 280px;
+        height: calc(100vh - var(--header-height));
+        background: var(--bg-secondary);
+        border-left: 1px solid var(--border-color);
+        transform: translateX(100%);
+        transition: transform var(--transition-normal);
+        z-index: 999;
+        overflow-y: auto;
+    }
+
+    .mobile-menu.open {
+        transform: translateX(0);
+    }
+
+    .mobile-menu-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: all var(--transition-normal);
+        z-index: 998;
+    }
+
+    .mobile-menu-overlay.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .mobile-nav {
+        list-style: none;
+        padding: var(--spacing-md);
+        margin: 0;
+    }
+
+    .mobile-nav-link {
+        display: block;
+        padding: var(--spacing-md);
+        color: var(--text-primary);
+        text-decoration: none;
+        border-radius: var(--radius-md);
+        transition: background var(--transition-fast);
+    }
+
+    .mobile-nav-link:hover,
+    .mobile-nav-link.active {
+        background: var(--accent-light);
+        color: var(--accent-primary);
+    }
+
+    /* الشريط الجانبي */
+    .sidebar {
+        transform: translateX(100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* تخطيط الصفحة الرئيسية */
+    .main-with-sidebar {
+        margin-right: 0;
+    }
+
+    /* قسم البطل */
+    .hero {
+        padding: var(--spacing-2xl) 0;
+    }
+
+    .hero-title {
+        font-size: var(--font-size-3xl);
+    }
+
+    .hero-subtitle {
+        font-size: var(--font-size-base);
+    }
+
+    /* الفوتر */
+    .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-xl);
+    }
+
+    .footer-brand {
+        grid-column: span 2;
+    }
+
+    /* شريط الأدوات */
+    .toolbar {
+        width: 90%;
+        max-width: 400px;
+    }
+}
+
+/* الشاشات الصغيرة (تابلت عمودي) */
+@media (max-width: 768px) {
+    :root {
+        --font-size-4xl: 2rem;
+        --font-size-3xl: 1.5rem;
+        --font-size-2xl: 1.25rem;
+    }
+
+    .grid-4,
+    .grid-3,
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-auto {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+
+    /* البطاقات */
+    .book-card-cover {
+        height: 220px;
+    }
+
+    .category-card {
+        padding: var(--spacing-lg);
+    }
+
+    .category-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+    }
+
+    /* قسم البطل */
+    .hero {
+        padding: var(--spacing-xl) 0;
+        text-align: center;
+    }
+
+    .hero-content {
+        max-width: 100%;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+    }
+
+    /* شريط البحث */
+    .search-bar {
+        max-width: 100%;
+    }
+
+    /* التصنيفات */
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    /* النافذة المنبثقة */
+    .modal {
+        width: 95%;
+        margin: var(--spacing-md);
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: var(--spacing-md);
+    }
+
+    /* شريط الأدوات */
+    .toolbar {
+        bottom: 20px;
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+
+    .toolbar-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    /* منطقة القراءة */
+    .reading-content {
+        font-size: 1.1rem;
+        line-height: 2;
+    }
+
+    /* الفوتر */
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .footer-brand {
+        grid-column: span 1;
+    }
+
+    /* التصفح */
+    .pagination {
+        flex-wrap: wrap;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+        flex-wrap: wrap;
+        font-size: var(--font-size-xs);
+    }
+
+    /* عناوين الأقسام */
+    .section-title {
+        font-size: var(--font-size-2xl);
+    }
+
+    .section-subtitle {
+        font-size: var(--font-size-base);
+    }
+
+    /* نتائج البحث */
+    .search-result {
+        padding: var(--spacing-md);
+    }
+
+    .search-result-meta {
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+    }
+}
+
+/* الشاشات الصغيرة جداً (موبايل) */
+@media (max-width: 480px) {
+    :root {
+        --font-size-4xl: 1.75rem;
+        --font-size-3xl: 1.35rem;
+        --font-size-2xl: 1.15rem;
+        --spacing-lg: 1rem;
+        --spacing-xl: 1.5rem;
+        --spacing-2xl: 2rem;
+        --spacing-3xl: 2.5rem;
+    }
+
+    .container {
+        padding: 0 var(--spacing-sm);
+    }
+
+    /* شريط التنقل */
+    .navbar-brand {
+        font-size: var(--font-size-lg);
+    }
+
+    .navbar-logo {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* قسم البطل */
+    .hero-title {
+        font-size: var(--font-size-2xl);
+    }
+
+    /* التصنيفات */
+    .categories-grid {
+        gap: var(--spacing-sm);
+    }
+
+    .category-card {
+        padding: var(--spacing-md);
+    }
+
+    .category-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .category-name {
+        font-size: var(--font-size-base);
+    }
+
+    /* البطاقات */
+    .book-card-cover {
+        height: 180px;
+    }
+
+    .book-card-content {
+        padding: var(--spacing-md);
+    }
+
+    .book-card-title {
+        font-size: var(--font-size-base);
+    }
+
+    /* الأزرار */
+    .btn {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
+    }
+
+    .btn-lg {
+        padding: var(--spacing-sm) var(--spacing-lg);
+    }
+
+    /* زر تبديل الثيم */
+    .theme-toggle {
+        width: 44px;
+        height: 24px;
+    }
+
+    .theme-toggle::before {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* منطقة القراءة */
+    .reading-content {
+        font-size: 1rem;
+        line-height: 1.9;
+    }
+
+    .reading-content p {
+        text-indent: 1.5em;
+    }
+
+    /* شريط الأدوات */
+    .toolbar {
+        width: calc(100% - 20px);
+        border-radius: var(--radius-lg);
+    }
+
+    /* النافذة المنبثقة */
+    .modal {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+
+    .modal-body {
+        max-height: calc(100vh - 120px);
+    }
+
+    /* التبويبات */
+    .tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
+    }
+
+    /* شريط أدوات التحديد */
+    .selection-toolbar {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% - 20px);
+        justify-content: center;
+    }
+
+    /* التنبيهات */
+    .alert {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
+    }
+
+    /* الفوتر */
+    .footer {
+        padding: var(--spacing-xl) 0;
+    }
+
+    .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: var(--spacing-md);
+    }
+
+    .footer-link {
+        padding: var(--spacing-xs);
+    }
+}
+
+/* تحسينات للشاشات فائقة العرض */
+@media (min-width: 1800px) {
+    :root {
+        --font-size-base: 1.1rem;
+    }
+
+    .grid-auto {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+}
+
+/* تحسينات للطباعة */
+@media print {
+    .navbar,
+    .sidebar,
+    .toolbar,
+    .back-to-top,
+    .theme-toggle,
+    .selection-toolbar {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+        color: black;
+    }
+
+    .reading-content {
+        font-size: 12pt;
+        line-height: 1.6;
+    }
+
+    a {
+        color: black;
+        text-decoration: underline;
+    }
+}
+
+/* تحسينات لوضع الشاشة الأفقية على الموبايل */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        padding: var(--spacing-lg) 0;
+    }
+
+    .modal {
+        max-height: 100vh;
+    }
+
+    .toolbar {
+        bottom: 10px;
+    }
+}
+
+/* دعم التفضيلات */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* تحسين للقراءة في الضوء الخافت */
+@media (prefers-color-scheme: dark) {
+    /* سيتم تطبيق الثيم الداكن تلقائياً إذا لم يختر المستخدم */
+}
+
+/* تحسينات التركيز للوصولية */
+@media (prefers-reduced-motion: no-preference) {
+    :focus-visible {
+        outline: 2px solid var(--accent-primary);
+        outline-offset: 2px;
+        transition: outline-offset 0.1s ease;
+    }
+}
+
+/* دعم الشاشات عالية الكثافة */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* تحسينات للصور والأيقونات */
+    .navbar-logo,
+    .category-icon,
+    .book-card-cover img {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}

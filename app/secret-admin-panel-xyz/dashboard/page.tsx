@@ -16,7 +16,11 @@ import {
   FiLogOut,
   FiBookmark,
   FiLayers,
+  FiUpload,
+  FiActivity,
 } from 'react-icons/fi';
+import DocumentUploader from '@/components/admin/DocumentUploader';
+import Navigation from '@/components/Navigation';
 
 interface DashboardStats {
   totalBooks: number;
@@ -31,6 +35,7 @@ interface DashboardStats {
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState<'overview' | 'upload' | 'settings'>('overview');
   const [stats, setStats] = useState<DashboardStats>({
     totalBooks: 0,
     totalCategories: 0,
@@ -120,33 +125,27 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-[#f5f1e8] to-[#e5dcc8] dark:from-[#0f1419] dark:via-[#1a2028] dark:to-[#0f1419]">
-      {/* Header */}
-      <header className="bg-white dark:bg-[#1a2028] shadow-lg border-b-2 border-[#d4af37]/20 sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
+      {/* Use main site Navigation */}
+      <Navigation />
+
+      {/* Admin Sub-header */}
+      <div className="bg-[#1a5f3f] dark:bg-[#0d1419] border-b-2 border-[#d4af37]/30">
+        <div className="container mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-lg bg-gradient-to-br from-[#1a5f3f] to-[#2d7a54]">
-                <FiGrid className="w-6 h-6 text-white" />
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-[#d4af37]/20">
+                <FiGrid className="w-5 h-5 text-[#d4af37]" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-[#1a5f3f] dark:text-[#d4af37] arabic-text">
+                <h2 className="text-lg font-bold text-white arabic-text">
                   لوحة التحكم الإدارية
-                </h1>
-                <p className="text-sm text-[#2d7a54] dark:text-[#e8dcc4]/70 arabic-text">
-                  المكتبة الإسلامية
-                </p>
+                </h2>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Link
-                href="/"
-                className="px-4 py-2 rounded-lg bg-[#f5f1e8] dark:bg-[#2d3748] text-[#1a5f3f] dark:text-[#d4af37] hover:scale-105 transition-all arabic-text font-medium"
-              >
-                عرض الموقع
-              </Link>
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors flex items-center gap-2 arabic-text"
+                className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors flex items-center gap-2 arabic-text text-sm"
               >
                 <FiLogOut className="w-4 h-4" />
                 تسجيل الخروج
@@ -154,18 +153,58 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       <div className="container mx-auto px-6 py-8">
-        {/* Welcome Message */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-[#1a5f3f] dark:text-[#d4af37] arabic-text mb-2">
-            مرحباً بك! 👋
-          </h2>
-          <p className="text-[#2d7a54] dark:text-[#e8dcc4] arabic-text">
-            إليك نظرة عامة على نشاط المكتبة
-          </p>
+        {/* Tabs Navigation */}
+        <div className="mb-8 flex gap-2 bg-white dark:bg-[#1a2028] p-2 rounded-lg shadow-lg">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`flex-1 py-3 px-4 rounded-lg transition-all arabic-text font-medium ${
+              activeTab === 'overview'
+                ? 'bg-[#1a5f3f] text-white'
+                : 'text-[#1a5f3f] dark:text-[#d4af37] hover:bg-[#f5f1e8] dark:hover:bg-[#2d3748]'
+            }`}
+          >
+            <FiGrid className="inline w-5 h-5 ml-2" />
+            نظرة عامة
+          </button>
+          <button
+            onClick={() => setActiveTab('upload')}
+            className={`flex-1 py-3 px-4 rounded-lg transition-all arabic-text font-medium ${
+              activeTab === 'upload'
+                ? 'bg-[#1a5f3f] text-white'
+                : 'text-[#1a5f3f] dark:text-[#d4af37] hover:bg-[#f5f1e8] dark:hover:bg-[#2d3748]'
+            }`}
+          >
+            <FiUpload className="inline w-5 h-5 ml-2" />
+            رفع كتاب
+          </button>
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`flex-1 py-3 px-4 rounded-lg transition-all arabic-text font-medium ${
+              activeTab === 'settings'
+                ? 'bg-[#1a5f3f] text-white'
+                : 'text-[#1a5f3f] dark:text-[#d4af37] hover:bg-[#f5f1e8] dark:hover:bg-[#2d3748]'
+            }`}
+          >
+            <FiSettings className="inline w-5 h-5 ml-2" />
+            الإعدادات
+          </button>
         </div>
+
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+          <>
+            {/* Welcome Message */}
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold text-[#1a5f3f] dark:text-[#d4af37] arabic-text mb-2">
+                مرحباً بك! 👋
+              </h2>
+              <p className="text-[#2d7a54] dark:text-[#e8dcc4] arabic-text">
+                إليك نظرة عامة على نشاط المكتبة
+              </p>
+            </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -313,6 +352,137 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
+          </>
+        )}
+
+        {/* Upload Tab */}
+        {activeTab === 'upload' && (
+          <div>
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold text-[#1a5f3f] dark:text-[#d4af37] arabic-text mb-2">
+                📤 رفع كتاب جديد
+              </h2>
+              <p className="text-[#2d7a54] dark:text-[#e8dcc4] arabic-text">
+                قم برفع ملف PDF أو DOCX أو ABX وسيتم معالجته تلقائياً
+              </p>
+            </div>
+
+            <DocumentUploader />
+
+            {/* Help Section */}
+            <div className="mt-8 bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+              <h3 className="font-semibold text-blue-800 dark:text-blue-200 mb-3 arabic-text">
+                كيف تعمل هذه الميزة؟
+              </h3>
+              <ol className="space-y-2 text-blue-700 dark:text-blue-300 text-sm">
+                <li className="flex gap-2 arabic-text">
+                  <span className="font-bold">1.</span>
+                  <span>قم برفع ملف PDF أو DOCX أو ABX يحتوي على الكتاب</span>
+                </li>
+                <li className="flex gap-2 arabic-text">
+                  <span className="font-bold">2.</span>
+                  <span>سيتم استخراج النص تلقائياً (أو باستخدام OCR للكتب المصورة)</span>
+                </li>
+                <li className="flex gap-2 arabic-text">
+                  <span className="font-bold">3.</span>
+                  <span>سيتم كشف الفهرس وتقسيم المحتوى إلى فصول وأقسام</span>
+                </li>
+                <li className="flex gap-2 arabic-text">
+                  <span className="font-bold">4.</span>
+                  <span>راجع النتيجة وقم بالتعديلات اللازمة قبل الحفظ</span>
+                </li>
+              </ol>
+            </div>
+
+            {/* Python Service Status */}
+            <div className="mt-8 islamic-card p-6">
+              <h3 className="text-lg font-bold text-[#1a5f3f] dark:text-[#d4af37] arabic-text mb-4">
+                حالة خدمة Python
+              </h3>
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-[#2d7a54] dark:text-[#e8dcc4] arabic-text">
+                  متصلة - جاهزة لمعالجة المستندات
+                </span>
+              </div>
+              <p className="text-sm text-[#2d7a54] dark:text-[#e8dcc4]/70 mt-2 arabic-text">
+                يمكنك رفع ملفات PDF/DOCX/ABX للمعالجة التلقائية
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Settings Tab */}
+        {activeTab === 'settings' && (
+          <div>
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold text-[#1a5f3f] dark:text-[#d4af37] arabic-text mb-2">
+                ⚙️ الإعدادات
+              </h2>
+              <p className="text-[#2d7a54] dark:text-[#e8dcc4] arabic-text">
+                إدارة إعدادات النظام وخدمة Python
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              {/* Python Service Settings */}
+              <div className="islamic-card p-6">
+                <h3 className="text-lg font-bold text-[#1a5f3f] dark:text-[#d4af37] arabic-text mb-4">
+                  إعدادات خدمة Python
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[#1a5f3f] dark:text-[#d4af37] mb-2 arabic-text">
+                      عنوان الخدمة
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue="http://localhost:5000"
+                      className="w-full px-4 py-2 rounded-lg border border-[#d4af37]/30 bg-white dark:bg-[#1a2028] text-[#1a5f3f] dark:text-[#e8dcc4]"
+                      dir="ltr"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#1a5f3f] dark:text-[#d4af37] mb-2 arabic-text">
+                      مزود الذكاء الاصطناعي
+                    </label>
+                    <select className="w-full px-4 py-2 rounded-lg border border-[#d4af37]/30 bg-white dark:bg-[#1a2028] text-[#1a5f3f] dark:text-[#e8dcc4] arabic-text">
+                      <option value="local">Ollama (محلي)</option>
+                      <option value="claude">Claude (Anthropic)</option>
+                      <option value="openai">OpenAI GPT</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* General Settings */}
+              <div className="islamic-card p-6">
+                <h3 className="text-lg font-bold text-[#1a5f3f] dark:text-[#d4af37] arabic-text mb-4">
+                  إعدادات عامة
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#1a5f3f] dark:text-[#e8dcc4] arabic-text">
+                      تفعيل OCR للكتب المصورة
+                    </span>
+                    <input type="checkbox" className="w-5 h-5" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#1a5f3f] dark:text-[#e8dcc4] arabic-text">
+                      استخدام الذكاء الاصطناعي لكشف الفهرس
+                    </span>
+                    <input type="checkbox" className="w-5 h-5" defaultChecked />
+                  </div>
+                </div>
+              </div>
+
+              {/* Save Button */}
+              <button className="w-full py-3 bg-[#1a5f3f] hover:bg-[#2d7a54] text-white rounded-lg font-bold transition-colors arabic-text">
+                حفظ الإعدادات
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
