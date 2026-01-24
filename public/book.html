@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="قراءة الكتاب في المكتبة الإسلامية">
+    <meta name="theme-color" content="#f5f5f0">
+
+    <title>قراءة الكتاب - المكتبة الإسلامية</title>
+
+    <!-- الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- الأنماط -->
+    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/book-reader.css">
+    <link rel="stylesheet" href="/css/context-menu.css">
+    <link rel="stylesheet" href="/css/text-finder.css">
+    <link rel="stylesheet" href="/css/smart-fetch.css">
+    <link rel="stylesheet" href="/css/ai-chat.css">
+
+    <!-- أيقونة الموقع -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body class="book-reader-page">
+    <!-- شريط تقدم القراءة -->
+    <div class="reading-progress">
+        <div class="reading-progress-bar" id="reading-progress-bar"></div>
+    </div>
+
+    <!-- شريط التنقل -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-right">
+                <a href="/" class="navbar-brand">
+                    <span class="navbar-logo">📚</span>
+                    <span class="navbar-brand-text">المكتبة الإسلامية</span>
+                </a>
+
+                <div class="book-info-mini" id="book-info-mini">
+                    <span class="book-title-mini" id="book-title-mini">اسم الكتاب</span>
+                </div>
+            </div>
+
+            <div class="navbar-actions">
+                <button class="theme-toggle" aria-label="تبديل الثيم" id="theme-toggle">
+                    <span class="theme-toggle-sun">☀️</span>
+                    <span class="theme-toggle-moon">🌙</span>
+                </button>
+
+                <button class="btn btn-ghost btn-icon sidebar-toggle-btn" data-action="toggle-sidebar" title="الفهرس">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="book-layout">
+        <!-- الشريط الجانبي - الفهرس -->
+        <aside class="book-sidebar" id="book-sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">فهرس الكتاب</h2>
+                <button class="btn btn-ghost btn-icon-sm sidebar-close" data-action="toggle-sidebar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="sidebar-content">
+                <nav class="book-toc" id="book-toc">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </nav>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="book-progress">
+                    <div class="progress-label">تقدم القراءة</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text">0%</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- منطقة القراءة -->
+        <main class="book-main">
+            <div class="book-container">
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb" id="breadcrumb">
+                    <div class="breadcrumb-item">
+                        <a href="/" class="breadcrumb-link">الرئيسية</a>
+                        <span class="breadcrumb-separator">/</span>
+                    </div>
+                    <div class="breadcrumb-item">
+                        <span class="breadcrumb-current" id="breadcrumb-book">الكتاب</span>
+                    </div>
+                </nav>
+
+                <!-- محتوى الكتاب -->
+                <article class="book-content reading-content" id="book-content">
+                    <div class="book-loading">
+                        <div class="spinner spinner-lg"></div>
+                        <p>جاري تحميل الكتاب...</p>
+                    </div>
+                </article>
+            </div>
+        </main>
+    </div>
+
+    <!-- شريط الأدوات -->
+    <div class="toolbar">
+        <button class="toolbar-btn" id="font-decrease" title="تصغير الخط">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+        </button>
+
+        <button class="toolbar-btn" id="font-increase" title="تكبير الخط">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="11" y1="8" x2="11" y2="14"></line>
+                <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+        </button>
+
+        <div class="toolbar-divider"></div>
+
+        <button class="toolbar-btn" id="goto-first" title="الصفحة الأولى">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="11 17 6 12 11 7"></polyline>
+                <polyline points="18 17 13 12 18 7"></polyline>
+            </svg>
+        </button>
+
+        <button class="toolbar-btn" id="goto-last" title="الصفحة الأخيرة">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="13 17 18 12 13 7"></polyline>
+                <polyline points="6 17 11 12 6 7"></polyline>
+            </svg>
+        </button>
+    </div>
+
+    <!-- قائمة النقر اليمين -->
+    <div id="contextMenu" class="context-menu" style="display: none;">
+        <ul>
+            <li onclick="searchSelectedText()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                أين ورد النص؟
+            </li>
+            <li onclick="smartFetchSelected()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                جلب النص الذكي
+            </li>
+            <li onclick="openAIChatWithText()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
+                اسأل الذكاء الاصطناعي
+            </li>
+            <li onclick="addBookmark()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                </svg>
+                إضافة علامة مرجعية
+            </li>
+        </ul>
+    </div>
+
+    <!-- نافذة البحث عن النص -->
+    <div id="textFinderModal" class="modal" style="display: none;">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3>أين ورد النص؟</h3>
+                <button class="modal-close" onclick="closeTextFinder()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="search-box">
+                    <input type="text" id="searchTextInput" class="form-input" placeholder="ابحث في جميع الكتب..." />
+                    <button class="btn btn-primary" onclick="performTextSearch()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        بحث
+                    </button>
+                </div>
+                <div id="textFinderResults" class="search-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الجلب الذكي -->
+    <div id="smartFetchModal" class="modal" style="display: none;">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3>جلب النص الذكي</h3>
+                <button class="modal-close" onclick="closeSmartFetch()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="search-box">
+                    <input type="text" id="smartFetchInput" class="form-input" placeholder="اسأل سؤالاً أو ابحث عن موضوع..." />
+                    <button class="btn btn-primary" onclick="performSmartFetch()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        جلب
+                    </button>
+                </div>
+                <div id="smartFetchResults" class="search-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة المحادثة الذكية -->
+    <div id="aiChatModal" class="modal" style="display: none;">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3>المحادثة الذكية</h3>
+                <button class="modal-close" onclick="closeAIChat()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="aiChatMessages" class="chat-messages"></div>
+                <div class="chat-input-box">
+                    <input type="text" id="aiChatInput" class="form-input" placeholder="اسأل سؤالاً..." onkeypress="if(event.key==='Enter') sendAIMessage()" />
+                    <button class="btn btn-primary" onclick="sendAIMessage()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                        إرسال
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // الحصول على معرف الكتاب من URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookId = urlParams.get('id');
+
+        if (!bookId) {
+            window.location.href = '/';
+        }
+
+        // متغيرات عامة
+        let book = null;
+        let allSections = [];
+        let currentSectionIndex = 0;
+        let fontSize = 1.25;
+
+        // تحميل الكتاب
+        async function loadBook() {
+            try {
+                const response = await fetch(`/api/books/${bookId}`);
+                if (!response.ok) {
+                    throw new Error('فشل تحميل الكتاب');
+                }
+
+                book = await response.json();
+
+                // تسطيح جميع الأقسام
+                allSections = [];
+                book.chapters.forEach(chapter => {
+                    chapter.sections.forEach(section => {
+                        allSections.push({
+                            ...section,
+                            chapterTitle: chapter.title,
+                            chapterId: chapter.id
+                        });
+                    });
+                });
+
+                // عرض الكتاب
+                renderBook();
+                renderTOC();
+                displaySection(0);
+
+            } catch (error) {
+                console.error('خطأ في تحميل الكتاب:', error);
+                document.getElementById('book-content').innerHTML = `
+                    <div class="error-state">
+                        <div class="error-icon">📚</div>
+                        <h3>حدث خطأ في تحميل الكتاب</h3>
+                        <a href="/" class="btn btn-primary">العودة للصفحة الرئيسية</a>
+                    </div>
+                `;
+            }
+        }
+
+        // عرض معلومات الكتاب
+        function renderBook() {
+            document.title = `${book.title} - المكتبة الإسلامية`;
+            document.getElementById('book-title-mini').textContent = book.title;
+            document.getElementById('breadcrumb-book').textContent = book.title;
+        }
+
+        // عرض الفهرس
+        function renderTOC() {
+            const tocContainer = document.getElementById('book-toc');
+            const tocHTML = '<ul class="toc">' + book.chapters.map((chapter, chapterIndex) => `
+                <li class="toc-chapter ${chapterIndex === 0 ? 'expanded' : ''}" data-chapter-id="${chapter.id}">
+                    <div class="toc-chapter-title ${chapterIndex === 0 ? 'expanded' : ''}" onclick="toggleChapter('${chapter.id}')">
+                        <span>${chapter.title}</span>
+                        <span style="font-size: 0.875rem;">${chapterIndex === 0 ? '▼' : '◄'}</span>
+                    </div>
+                    <ul class="toc-sections">
+                        ${chapter.sections.map((section, sectionIndex) => {
+                            const globalIndex = allSections.findIndex(s => s.id === section.id);
+                            return `
+                                <li class="toc-section" onclick="displaySection(${globalIndex})">
+                                    ${section.title}
+                                </li>
+                            `;
+                        }).join('')}
+                    </ul>
+                </li>
+            `).join('') + '</ul>';
+
+            tocContainer.innerHTML = tocHTML;
+        }
+
+        // تبديل توسيع الفصل
+        function toggleChapter(chapterId) {
+            const chapter = document.querySelector(`[data-chapter-id="${chapterId}"]`);
+            const title = chapter.querySelector('.toc-chapter-title');
+            const arrow = title.querySelector('span:last-child');
+
+            if (chapter.classList.contains('expanded')) {
+                chapter.classList.remove('expanded');
+                title.classList.remove('expanded');
+                arrow.textContent = '◄';
+            } else {
+                chapter.classList.add('expanded');
+                title.classList.add('expanded');
+                arrow.textContent = '▼';
+            }
+        }
+
+        // عرض قسم معين
+        function displaySection(index) {
+            if (index < 0 || index >= allSections.length) return;
+
+            currentSectionIndex = index;
+            const section = allSections[index];
+
+            // تمييز القسم الحالي في الفهرس
+            document.querySelectorAll('.toc-section').forEach((el, i) => {
+                if (i === index) {
+                    el.classList.add('active');
+                    // توسيع الفصل الحالي
+                    const chapterEl = el.closest('.toc-chapter');
+                    if (chapterEl && !chapterEl.classList.contains('expanded')) {
+                        const chapterId = chapterEl.getAttribute('data-chapter-id');
+                        toggleChapter(chapterId);
+                    }
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+
+            // تمييز النص الإسلامي
+            let content = section.content;
+            content = content.replace(/عليه السلام/g, '<span style="color: var(--islamic-gold); font-weight: 600;">عليه السلام</span>');
+            content = content.replace(/صلى الله عليه وآله/g, '<span style="color: var(--islamic-gold); font-weight: 600;">صلى الله عليه وآله</span>');
+            content = content.replace(/صلى الله عليه وسلم/g, '<span style="color: var(--islamic-gold); font-weight: 600;">صلى الله عليه وسلم</span>');
+            content = content.replace(/«\s*(\d+)\s*»/g, '<sup style="font-size: 0.7em;">[‏$1‏]</sup>');
+
+            // عرض المحتوى
+            document.getElementById('book-content').innerHTML = `
+                <div class="content-header">
+                    <h1 class="content-title">${section.title}</h1>
+                    <div class="content-meta">
+                        <span>${section.chapterTitle}</span>
+                        <span>•</span>
+                        <span>صفحة ${index + 1} من ${allSections.length}</span>
+                    </div>
+                </div>
+
+                <div class="content-body" id="content-body" style="font-size: ${fontSize}rem;">
+                    ${content}
+                </div>
+
+                <div class="content-navigation">
+                    <button class="btn btn-secondary" onclick="displaySection(${index - 1})" ${index === 0 ? 'disabled' : ''}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        السابق
+                    </button>
+
+                    <button class="btn btn-secondary" onclick="displaySection(${index + 1})" ${index === allSections.length - 1 ? 'disabled' : ''}>
+                        التالي
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            `;
+
+            // تحديث التقدم
+            updateProgress();
+
+            // إغلاق الشريط الجانبي على الموبايل
+            if (window.innerWidth <= 992) {
+                document.getElementById('book-sidebar').classList.remove('open');
+            }
+
+            // التمرير للأعلى
+            window.scrollTo(0, 0);
+        }
+
+        // تحديث شريط التقدم
+        function updateProgress() {
+            const progress = Math.round(((currentSectionIndex + 1) / allSections.length) * 100);
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = progress + '%';
+            document.getElementById('reading-progress-bar').style.width = progress + '%';
+        }
+
+        // تبديل الثيم
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // تحميل الثيم المحفوظ
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // تبديل الشريط الجانبي
+        document.querySelectorAll('[data-action="toggle-sidebar"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.getElementById('book-sidebar').classList.toggle('open');
+            });
+        });
+
+        // التحكم في حجم الخط
+        document.getElementById('font-decrease').addEventListener('click', function() {
+            fontSize = Math.max(0.875, fontSize - 0.125);
+            const contentBody = document.getElementById('content-body');
+            if (contentBody) {
+                contentBody.style.fontSize = fontSize + 'rem';
+            }
+        });
+
+        document.getElementById('font-increase').addEventListener('click', function() {
+            fontSize = Math.min(2, fontSize + 0.125);
+            const contentBody = document.getElementById('content-body');
+            if (contentBody) {
+                contentBody.style.fontSize = fontSize + 'rem';
+            }
+        });
+
+        // الانتقال للصفحة الأولى/الأخيرة
+        document.getElementById('goto-first').addEventListener('click', () => displaySection(0));
+        document.getElementById('goto-last').addEventListener('click', () => displaySection(allSections.length - 1));
+
+        // تحميل الكتاب عند فتح الصفحة
+        loadBook();
+
+        // ===== قائمة النقر اليمين =====
+        let selectedText = '';
+        const contextMenu = document.getElementById('contextMenu');
+
+        // إظهار قائمة النقر اليمين
+        document.addEventListener('contextmenu', function(e) {
+            const selection = window.getSelection().toString().trim();
+
+            if (selection && selection.length > 0) {
+                e.preventDefault();
+                selectedText = selection;
+
+                // إظهار القائمة مؤقتاً لحساب حجمها
+                contextMenu.style.display = 'block';
+                contextMenu.style.visibility = 'hidden';
+
+                // حساب الموضع المناسب
+                const menuRect = contextMenu.getBoundingClientRect();
+                const x = e.clientX;
+                const y = e.clientY;
+
+                // إذا كانت القائمة ستخرج من أسفل الشاشة، اظهرها فوق المؤشر
+                if (window.innerHeight - y < menuRect.height) {
+                    contextMenu.style.top = (y + window.scrollY - menuRect.height - 5) + 'px';
+                } else {
+                    contextMenu.style.top = (y + window.scrollY + 5) + 'px';
+                }
+
+                // إذا كانت القائمة ستخرج من يسار الشاشة، اظهرها على اليسار
+                if (window.innerWidth - x < menuRect.width) {
+                    contextMenu.style.left = (x + window.scrollX - menuRect.width - 5) + 'px';
+                } else {
+                    contextMenu.style.left = (x + window.scrollX + 5) + 'px';
+                }
+
+                // إظهار القائمة
+                contextMenu.style.visibility = 'visible';
+            }
+        });
+
+        // إخفاء القائمة عند النقر في أي مكان آخر
+        document.addEventListener('click', function() {
+            contextMenu.style.display = 'none';
+        });
+
+        // ===== البحث عن النص =====
+        function searchSelectedText() {
+            document.getElementById('searchTextInput').value = selectedText;
+            document.getElementById('textFinderModal').style.display = 'flex';
+            contextMenu.style.display = 'none';
+            performTextSearch();
+        }
+
+        function closeTextFinder() {
+            document.getElementById('textFinderModal').style.display = 'none';
+        }
+
+        async function performTextSearch() {
+            const query = document.getElementById('searchTextInput').value;
+            if (!query || query.trim().length < 2) {
+                alert('الرجاء إدخال نص للبحث');
+                return;
+            }
+
+            const resultsContainer = document.getElementById('textFinderResults');
+            resultsContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>جاري البحث...</p></div>';
+
+            try {
+                const response = await fetch('/api/search-text', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'حدث خطأ في البحث');
+                }
+
+                if (data.results && data.results.length > 0) {
+                    resultsContainer.innerHTML = `
+                        <div class="results-header">
+                            <p>تم العثور على ${data.count} نتيجة</p>
+                        </div>
+                        <div class="results-list">
+                            ${data.results.map(result => `
+                                <div class="result-item">
+                                    <h4><a href="/book.html?id=${result.bookId}">${result.bookTitle}</a></h4>
+                                    <p class="result-meta">${result.bookAuthor} • ${result.categoryName}</p>
+                                    <p class="result-chapter">${result.chapterTitle}</p>
+                                    <p class="result-excerpt">${result.context}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    resultsContainer.innerHTML = '<div class="no-results"><p>لم يتم العثور على نتائج</p></div>';
+                }
+            } catch (error) {
+                console.error('Error searching text:', error);
+                resultsContainer.innerHTML = `<div class="error-message"><p>حدث خطأ: ${error.message}</p></div>`;
+            }
+        }
+
+        // ===== الجلب الذكي =====
+        function smartFetchSelected() {
+            document.getElementById('smartFetchInput').value = selectedText;
+            document.getElementById('smartFetchModal').style.display = 'flex';
+            contextMenu.style.display = 'none';
+            performSmartFetch();
+        }
+
+        function closeSmartFetch() {
+            document.getElementById('smartFetchModal').style.display = 'none';
+        }
+
+        async function performSmartFetch() {
+            const query = document.getElementById('smartFetchInput').value;
+            if (!query || query.trim().length < 3) {
+                alert('الرجاء إدخال سؤال أو موضوع للبحث');
+                return;
+            }
+
+            const resultsContainer = document.getElementById('smartFetchResults');
+            resultsContainer.innerHTML = '<div class="loading"><div class="spinner"></div><p>جاري البحث الذكي...</p></div>';
+
+            try {
+                const response = await fetch('/api/smart-fetch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, limit: 10 })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'حدث خطأ في البحث');
+                }
+
+                if (data.results && data.results.length > 0) {
+                    resultsContainer.innerHTML = `
+                        <div class="results-header">
+                            <p>تم العثور على ${data.count} نتيجة باستخدام الكلمات: ${data.keywords.join(', ')}</p>
+                        </div>
+                        <div class="results-list">
+                            ${data.results.map(result => `
+                                <div class="result-item">
+                                    <h4><a href="/book.html?id=${result.bookId}">${result.bookTitle}</a></h4>
+                                    <p class="result-meta">${result.bookAuthor} • ${result.categoryName}</p>
+                                    <p class="result-chapter">${result.chapterTitle} - ${result.sectionTitle}</p>
+                                    <p class="result-excerpt">${result.excerpt}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    resultsContainer.innerHTML = '<div class="no-results"><p>لم يتم العثور على نتائج</p></div>';
+                }
+            } catch (error) {
+                console.error('Error in smart fetch:', error);
+                resultsContainer.innerHTML = `<div class="error-message"><p>حدث خطأ: ${error.message}</p></div>`;
+            }
+        }
+
+        // ===== المحادثة الذكية =====
+        let chatContext = [];
+
+        function openAIChatWithText() {
+            if (selectedText) {
+                document.getElementById('aiChatInput').value = `اشرح لي: "${selectedText}"`;
+            }
+            document.getElementById('aiChatModal').style.display = 'flex';
+            contextMenu.style.display = 'none';
+        }
+
+        function closeAIChat() {
+            document.getElementById('aiChatModal').style.display = 'none';
+        }
+
+        async function sendAIMessage() {
+            const input = document.getElementById('aiChatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            const messagesContainer = document.getElementById('aiChatMessages');
+
+            // إضافة رسالة المستخدم
+            messagesContainer.innerHTML += `
+                <div class="chat-message user-message">
+                    <div class="message-content">${message}</div>
+                </div>
+            `;
+
+            // إضافة رسالة انتظار
+            messagesContainer.innerHTML += `
+                <div class="chat-message ai-message loading-message">
+                    <div class="message-content">
+                        <div class="spinner-small"></div>
+                        <span>جاري التفكير...</span>
+                    </div>
+                </div>
+            `;
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            input.value = '';
+
+            try {
+                const response = await fetch('/api/ai-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, context: chatContext })
+                });
+
+                const data = await response.json();
+
+                // إزالة رسالة الانتظار
+                const loadingMsg = messagesContainer.querySelector('.loading-message');
+                if (loadingMsg) loadingMsg.remove();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'حدث خطأ في الاتصال بالذكاء الاصطناعي');
+                }
+
+                // إضافة رد الذكاء الاصطناعي
+                let aiReply = `<div class="message-content">${data.reply}</div>`;
+
+                if (data.sources && data.sources.length > 0) {
+                    aiReply += '<div class="message-sources"><strong>المصادر:</strong><ul>';
+                    data.sources.forEach(source => {
+                        aiReply += `<li><a href="/book.html?id=${source.bookId}">${source.bookTitle} - ${source.chapterTitle}</a></li>`;
+                    });
+                    aiReply += '</ul></div>';
+                }
+
+                messagesContainer.innerHTML += `
+                    <div class="chat-message ai-message">
+                        ${aiReply}
+                    </div>
+                `;
+
+                // تحديث السياق
+                chatContext.push({ role: 'user', content: message });
+                chatContext.push({ role: 'assistant', content: data.reply });
+
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            } catch (error) {
+                console.error('Error in AI chat:', error);
+
+                // إزالة رسالة الانتظار
+                const loadingMsg = messagesContainer.querySelector('.loading-message');
+                if (loadingMsg) loadingMsg.remove();
+
+                messagesContainer.innerHTML += `
+                    <div class="chat-message ai-message error-message">
+                        <div class="message-content">حدث خطأ: ${error.message}</div>
+                    </div>
+                `;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+
+        // ===== العلامات المرجعية =====
+        function addBookmark() {
+            const section = allSections[currentSectionIndex];
+
+            // الحصول على العلامات المخزنة
+            let bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+
+            // التحقق من وجود العلامة
+            const exists = bookmarks.some(b => b.bookId === bookId && b.sectionId === section.id);
+
+            if (exists) {
+                alert('العلامة المرجعية موجودة مسبقاً');
+                return;
+            }
+
+            // إضافة العلامة الجديدة
+            bookmarks.push({
+                bookId: bookId,
+                bookTitle: book.title,
+                sectionId: section.id,
+                sectionTitle: section.title,
+                chapterTitle: section.chapterTitle,
+                addedAt: new Date().toISOString()
+            });
+
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
+            alert('✓ تم إضافة العلامة المرجعية بنجاح');
+            contextMenu.style.display = 'none';
+        }
+
+        // إغلاق النوافذ عند النقر على الخلفية
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
