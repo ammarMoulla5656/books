@@ -2,6 +2,7 @@ export interface Section {
   id: string;
   title: string;
   content: string;
+  order?: number;
   pageCount?: number; // عدد الصفحات في هذا القسم
 }
 

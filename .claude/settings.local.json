@@ -55,7 +55,8 @@
       "Bash(powershell \"Copy-Item -Path ''f:\\\\root ammar\\\\project\\\\conductor_playground\\\\algiers\\\\islamic-library\\\\*'' -Destination ''f:\\\\root ammar\\\\project\\\\conductor_playground\\\\algiers\\\\public\\\\islamic-library\\\\'' -Recurse -Force\")",
       "Bash(powershell \"Stop-Process -Id 42308 -Force\")",
       "Bash(gh pr view:*)",
-      "Bash(gh pr diff:*)"
+      "Bash(gh pr diff:*)",
+      "Bash(tree:*)"
     ]
   }
 }

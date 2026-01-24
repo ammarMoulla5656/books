@@ -1,8 +1,17 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { requireAdminAuth, logUnauthorizedAccess } from '@/lib/admin-auth';
+import { getOrGenerateAdminPassword } from '@/lib/password-generator';
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/seed', request, 'No valid admin session');
+    return authCheck.error;
+  }
+
   try {
     // إنشاء التصنيفات
     const categories = [
@@ -54,8 +63,13 @@ export async function POST() {
     });
 
     let adminCreated = false;
+    let generatedPassword: string | null = null;
+
     if (!existingAdmin) {
-      const hashedPassword = await bcrypt.hash('Admin@123456', 10);
+      // Get password from environment or generate secure random password
+      const initialPassword = getOrGenerateAdminPassword();
+      const hashedPassword = await bcrypt.hash(initialPassword, 12);
+
       await prisma.admin.create({
         data: {
           email: 'admin@islamic-library.com',
@@ -63,7 +77,13 @@ export async function POST() {
           name: 'المسؤول',
         }
       });
+
       adminCreated = true;
+
+      // Only include password in response if it was generated (not from env)
+      if (!process.env.ADMIN_INITIAL_PASSWORD) {
+        generatedPassword = initialPassword;
+      }
     }
 
     return NextResponse.json({
@@ -72,6 +92,11 @@ export async function POST() {
       data: {
         categoriesCreated: createdCategories.length,
         adminCreated,
+        ...(generatedPassword && {
+          warning: 'كلمة مرور مؤقتة تم توليدها',
+          tempPassword: generatedPassword,
+          note: 'سيتم طلب تغيير كلمة المرور عند أول تسجيل دخول'
+        }),
       }
     });
 

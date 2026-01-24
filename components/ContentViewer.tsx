@@ -25,9 +25,9 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
     chapter.sections.map(section => ({
       chapter,
       section,
-      pageNumber: extractPageNumber(section.title) || section.order,
+      pageNumber: extractPageNumber(section.title) || section.order || 0,
     }))
-  ).sort((a, b) => a.pageNumber - b.pageNumber);
+  ).sort((a, b) => (a.pageNumber ?? 0) - (b.pageNumber ?? 0));
 
   // Scroll to chapter when selected from TOC
   useEffect(() => {
@@ -118,7 +118,7 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
 
   // Extract page number from section title
   function extractPageNumber(title: string): number | null {
-    const match = title.match(/صفحة\s+(\d+)/);
+    const match = title.match(/\u0635\u0641\u062d\u0629\s*(\d+)/) || title.match(/(\d+)/);
     return match ? parseInt(match[1]) : null;
   }
 
@@ -210,7 +210,7 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
                           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                             <span className="text-xs text-gray-500 dark:text-gray-400">✦</span>
                             <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                              {section.order}
+                              {section.order ?? extractPageNumber(section.title) ?? ''}
                             </span>
                           </div>
                           <div className="flex-grow h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent"></div>

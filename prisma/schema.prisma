@@ -13,14 +13,34 @@ datasource db {
 // ============================================
 
 model Admin {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  password      String
-  name          String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                    String   @id @default(cuid())
+  email                 String   @unique
+  password              String
+  name                  String?
+  mustChangePassword    Boolean  @default(true)
+  passwordChangedAt     DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  sessions              AdminSession[]
 
   @@map("admins")
+}
+
+model AdminSession {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  adminId   String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([adminId])
+  @@index([expiresAt])
+  @@map("admin_sessions")
 }
 
 // ============================================
