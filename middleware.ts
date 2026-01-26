@@ -115,7 +115,7 @@ export function middleware(request: NextRequest) {
   const ip = request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip') ?? 'unknown';
   const now = Date.now();
   const windowMs = 15 * 60 * 1000; // 15 minutes
-  const maxRequests = 100;
+  const maxRequests = process.env.NODE_ENV === 'development' ? 10000 : 100; // More permissive in dev
 
   // ============================================
   // 1. Check if IP is blocked

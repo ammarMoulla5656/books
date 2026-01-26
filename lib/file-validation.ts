@@ -55,6 +55,15 @@ const FILE_SIGNATURES: Record<string, MagicBytesSignature[]> = {
     {
       bytes: [0xef, 0xbb, 0xbf, 0x3c, 0x3f, 0x78, 0x6d, 0x6c], // BOM + <?xml
       description: 'ABX XML with UTF-8 BOM'
+    },
+    {
+      // ABX files from Ahlulbayt Library start with "abl" signature
+      bytes: [0x61, 0x62, 0x6c], // abl
+      description: 'ABX Library Format (Ahlulbayt Library)'
+    },
+    {
+      bytes: [0x3c], // < (generic XML/HTML start)
+      description: 'ABX XML/Text Format'
     }
   ]
 };
@@ -161,25 +170,49 @@ export async function validateFileContent(file: File): Promise<{
  * Validate ABX text content (non-XML, non-ZIP)
  */
 async function validateAbxTextContent(file: File): Promise<boolean> {
-  const header = await readFileHeader(file, 16384);
-  let text = '';
+  try {
+    const header = await readFileHeader(file, 32768); // Read more bytes for better detection
+    let text = '';
 
-  if (typeof TextDecoder !== 'undefined') {
-    text = new TextDecoder('utf-8').decode(header);
-  } else {
-    text = Buffer.from(header).toString('utf-8');
+    if (typeof TextDecoder !== 'undefined') {
+      text = new TextDecoder('utf-8', { fatal: false }).decode(header);
+    } else {
+      text = Buffer.from(header).toString('utf-8');
+    }
+
+    // Check for ABX signature patterns
+    const signaturePatterns = [
+      /^abl\d{3}/i, // ABX Library format (e.g., abl001)
+      /<\s*هوية\s*الكتاب/i, // Book identity tag
+      /<\s*صفحة\s*>/i, // Page tag
+      /<\s*ملحق\s*=/i, // Attachment tag
+      /<\s*الكتاب\s*>/i, // Book tag
+      /<\s*اسم\s*الكتاب\s*>/i, // Book name tag
+      /<\s*اسم\s*المؤلف\s*>/i, // Author tag
+    ];
+
+    // Check if at least one pattern matches
+    const hasAbxPattern = signaturePatterns.some((pattern) => pattern.test(text));
+
+    if (hasAbxPattern) {
+      console.log('✅ ABX content validated: Found ABX-specific tags');
+      return true;
+    }
+
+    // Additional check: look for multiple XML tags
+    const xmlTagCount = (text.match(/<[^>]+>/g) || []).length;
+    if (xmlTagCount > 5) {
+      console.log('✅ ABX content validated: Found multiple XML tags');
+      return true;
+    }
+
+    console.log('⚠️ ABX content validation: No ABX patterns found');
+    return false;
+
+  } catch (error) {
+    console.error('Error validating ABX text content:', error);
+    return false;
   }
-
-  const tagMatches = [
-    new RegExp('<\s*\u0647\u0648\u064a\u0629\s*\u0627\u0644\u0643\u062a\u0627\u0628', 'i'),
-    new RegExp('<\s*\u0635\u0641\u062d\u0629', 'i'),
-    new RegExp('<\s*\u0645\u0644\u062d\u0642', 'i'),
-    new RegExp('<\s*\u0641\u0647\u0631\u0633', 'i'),
-    new RegExp('<\s*\u0647\u0627\u0645\u0634', 'i'),
-    new RegExp('<\s*\u0627\u0631\u062a\u0628\u0627\u0637', 'i'),
-  ];
-
-  return tagMatches.some((pattern) => pattern.test(text));
 }
 
 

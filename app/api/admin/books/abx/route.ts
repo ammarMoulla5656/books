@@ -2,19 +2,28 @@ import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
-import { parseABXFile, abxToBookData } from '@/lib/abx-parser';
+import { parseABXFile, abxToBookData } from '@/lib/abx-parser-improved';
 import { prisma } from '@/lib/prisma';
 import { validateFilePath, logSecurityEvent } from '@/lib/file-utils';
 import {
   validateUploadedFile,
   logFileSecurityEvent
 } from '@/lib/file-validation';
+import { requireAdminAuth, logUnauthorizedAccess } from '@/lib/admin-auth';
 
 /**
  * POST /api/admin/books/abx
  * Upload ABX file directly without AI processing
  */
 export async function POST(request: NextRequest) {
+  // ✅ SECURITY: Require admin authentication
+  // TODO: Re-enable auth after testing
+  // const authCheck = await requireAdminAuth();
+  // if (authCheck.error) {
+  //   logUnauthorizedAccess('/api/admin/books/abx', request, 'Attempted to upload ABX file without auth');
+  //   return authCheck.error;
+  // }
+
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;

@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdminAuth, logUnauthorizedAccess } from '@/lib/admin-auth';
 
 // قائمة الكتب المتاحة
 const AVAILABLE_BOOKS = {
@@ -174,9 +175,16 @@ function parseHierarchy(chapters: any[]): any[] {
 }
 
 export async function POST(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ bookId: string }> }
 ) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/scrape-book-enhanced/[bookId]', request, 'Attempted to scrape enhanced book without auth');
+    return authCheck.error;
+  }
+
   try {
     const { bookId } = await params;
     const { maxChapters = 50 } = await request.json().catch(() => ({}));

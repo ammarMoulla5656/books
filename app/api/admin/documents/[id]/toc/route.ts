@@ -6,6 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdminAuth, logUnauthorizedAccess } from '@/lib/admin-auth';
 
 // ============================================
 // GET - Get extracted TOC
@@ -15,6 +16,13 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/documents/[id]/toc (GET)', request);
+    return authCheck.error;
+  }
+
   try {
     const { id } = await params;
 
@@ -68,6 +76,13 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/documents/[id]/toc (PUT)', request);
+    return authCheck.error;
+  }
+
   try {
     const { id } = await params;
     const body = await request.json();
