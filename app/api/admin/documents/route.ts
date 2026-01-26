@@ -6,16 +6,30 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { writeFile, mkdir } from 'fs/promises';
+import { DocumentType } from '@prisma/client';
+import { writeFile, mkdir, unlink } from 'fs/promises';
 import { join } from 'path';
-import { v4 as uuidv4 } from 'uuid';
 import { pythonService } from '@/lib/python-service';
+import { requireAdminAuth, logUnauthorizedAccess } from '@/lib/admin-auth';
+import { validateFilePath, logSecurityEvent } from '@/lib/file-utils';
+import {
+  validateUploadedFile,
+  logFileSecurityEvent,
+  scanForViruses
+} from '@/lib/file-validation';
 
 // ============================================
 // GET - List all document uploads
 // ============================================
 
 export async function GET(request: NextRequest) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/documents (GET)', request);
+    return authCheck.error;
+  }
+
   try {
     const searchParams = request.nextUrl.searchParams;
     const status = searchParams.get('status');
@@ -60,6 +74,13 @@ export async function GET(request: NextRequest) {
 // ============================================
 
 export async function POST(request: NextRequest) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/documents (POST)', request);
+    return authCheck.error;
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -67,38 +88,86 @@ export async function POST(request: NextRequest) {
     const options = optionsStr ? JSON.parse(optionsStr) : {};
 
     if (!file) {
+      logFileSecurityEvent('upload_attempt', {
+        error: 'No file provided',
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      });
+
       return NextResponse.json(
         { error: 'No file provided' },
         { status: 400 }
       );
     }
 
-    // Validate file type
-    const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/x-abx'];
-    const allowedExtensions = ['.pdf', '.docx', '.abx'];
-    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+    // 🔒 COMPREHENSIVE SECURITY VALIDATION
+    // This performs ALL security checks:
+    // 1. Magic bytes verification (prevents file type spoofing)
+    // 2. File extension validation
+    // 3. MIME type validation
+    // 4. File size validation (50MB max)
+    // 5. Filename sanitization
+    console.log('🔒 Starting comprehensive file validation...');
+    const validation = await validateUploadedFile(file);
 
-    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+    if (!validation.valid) {
+      // Log security event for failed validation
+      logFileSecurityEvent('validation_failed', {
+        filename: file.name,
+        size: file.size,
+        type: file.type,
+        errors: validation.errors,
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      });
+
+      console.error('❌ File validation failed:', validation.errors);
+
       return NextResponse.json(
-        { error: 'Invalid file type. Only PDF, DOCX, and ABX are allowed.' },
+        {
+          error: 'File validation failed',
+          errors: validation.errors,
+          warnings: validation.warnings
+        },
         { status: 400 }
       );
     }
 
-    // Validate file size (100MB max)
-    const maxSize = 100 * 1024 * 1024;
-    if (file.size > maxSize) {
-      return NextResponse.json(
-        { error: 'File too large. Maximum size is 100MB.' },
-        { status: 400 }
-      );
+    // Log warnings if any
+    if (validation.warnings.length > 0) {
+      console.warn('⚠️ File validation warnings:', validation.warnings);
     }
 
-    // Generate unique filename
-    const fileExt = file.name.split('.').pop()?.toLowerCase() || 'pdf';
-    const filename = `${uuidv4()}.${fileExt}`;
+    console.log('✅ File validation passed:', validation.fileInfo);
+
+    // Use the secure filename from validation
+    const secureFilename = validation.fileInfo!.secureName;
+    const fileExt = validation.fileInfo!.extension;
+
+    // 🔒 SECURITY: Create safe upload path within allowed directory
     const uploadDir = join(process.cwd(), 'uploads', 'documents');
-    const filePath = join(uploadDir, filename);
+    const filePath = join(uploadDir, secureFilename);
+
+    // Double-check path is safe (defense in depth)
+    try {
+      validateFilePath(filePath, 'uploads');
+    } catch (pathError) {
+      logFileSecurityEvent('suspicious_file', {
+        originalName: file.name,
+        generatedPath: filePath,
+        error: pathError,
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      });
+
+      console.error('⚠️ SECURITY ALERT: Invalid path detected!', {
+        originalName: file.name,
+        generatedPath: filePath,
+        error: pathError
+      });
+
+      return NextResponse.json(
+        { error: 'Invalid file path' },
+        { status: 400 }
+      );
+    }
 
     // Ensure upload directory exists
     await mkdir(uploadDir, { recursive: true });
@@ -108,16 +177,55 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
     await writeFile(filePath, buffer);
 
+    // 🔒 SECURITY: Scan for viruses (placeholder for now)
+    const virusScan = await scanForViruses(filePath);
+    if (!virusScan.clean) {
+      // Delete the file immediately
+      await unlink(filePath).catch(() => {});
+
+      logFileSecurityEvent('file_rejected', {
+        filename: secureFilename,
+        reason: 'Virus detected',
+        threat: virusScan.threat,
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      });
+
+      console.error('🚨 SECURITY ALERT: Virus detected in uploaded file!', virusScan);
+
+      return NextResponse.json(
+        { error: 'File rejected: Security threat detected' },
+        { status: 400 }
+      );
+    }
+
+    // Log successful upload
+    logSecurityEvent('file_uploaded', filePath, {
+      originalName: file.name,
+      secureName: secureFilename,
+      size: file.size,
+      type: file.type,
+      detectedType: validation.fileInfo!.detectedType
+    });
+
+    logFileSecurityEvent('upload_attempt', {
+      filename: secureFilename,
+      originalName: file.name,
+      size: file.size,
+      detectedType: validation.fileInfo!.detectedType,
+      success: true,
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
+
     // Determine file type
-    let fileType: 'PDF' | 'DOCX' | 'ABX' = 'PDF';
+    let fileType: DocumentType = 'PDF';
     if (fileExt === 'pdf') fileType = 'PDF';
     else if (fileExt === 'docx') fileType = 'DOCX';
-    else if (fileExt === 'abx') fileType = 'ABX';
+    else if (fileExt === 'abx') fileType = 'ABX' as DocumentType;
 
     // Create database record
     const upload = await prisma.documentUpload.create({
       data: {
-        filename,
+        filename: secureFilename,
         originalName: file.name,
         fileType,
         fileSize: file.size,

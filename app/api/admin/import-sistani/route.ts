@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdminAuth, logUnauthorizedAccess } from '@/lib/admin-auth';
 
 // الكتب الـ 12 من موقع السيستاني مع بياناتها
 const SISTANI_BOOKS = [
@@ -158,7 +159,14 @@ const SISTANI_BOOKS = [
   },
 ];
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/import-sistani', request, 'Attempted to import Sistani books without auth');
+    return authCheck.error;
+  }
+
   try {
     console.log('بدء استيراد الكتب...');
 

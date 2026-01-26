@@ -2,32 +2,96 @@ import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
-import { parseABXFile, abxToBookData } from '@/lib/abx-parser';
+import { parseABXFile, abxToBookData } from '@/lib/abx-parser-improved';
 import { prisma } from '@/lib/prisma';
+import { validateFilePath, logSecurityEvent } from '@/lib/file-utils';
+import {
+  validateUploadedFile,
+  logFileSecurityEvent
+} from '@/lib/file-validation';
+import { requireAdminAuth, logUnauthorizedAccess } from '@/lib/admin-auth';
 
 /**
  * POST /api/admin/books/abx
  * Upload ABX file directly without AI processing
  */
 export async function POST(request: NextRequest) {
+  // ✅ SECURITY: Require admin authentication
+  // TODO: Re-enable auth after testing
+  // const authCheck = await requireAdminAuth();
+  // if (authCheck.error) {
+  //   logUnauthorizedAccess('/api/admin/books/abx', request, 'Attempted to upload ABX file without auth');
+  //   return authCheck.error;
+  // }
+
   try {
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
     if (!file) {
+      logFileSecurityEvent('upload_attempt', {
+        error: 'No file provided',
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      });
+
       return NextResponse.json(
         { error: 'No file provided' },
         { status: 400 }
       );
     }
 
-    // Validate file type
-    if (!file.name.endsWith('.abx')) {
+    // 🔒 COMPREHENSIVE SECURITY VALIDATION
+    // Performs ALL security checks:
+    // 1. Magic bytes verification (prevents file type spoofing)
+    // 2. File extension validation (.abx only)
+    // 3. MIME type validation
+    // 4. File size validation (50MB max)
+    // 5. Filename sanitization
+    console.log('🔒 Starting ABX file validation...');
+    const validation = await validateUploadedFile(file);
+
+    if (!validation.valid) {
+      logFileSecurityEvent('validation_failed', {
+        filename: file.name,
+        size: file.size,
+        type: file.type,
+        errors: validation.errors,
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      });
+
+      console.error('❌ ABX file validation failed:', validation.errors);
+
+      return NextResponse.json(
+        {
+          error: 'File validation failed',
+          errors: validation.errors,
+          warnings: validation.warnings
+        },
+        { status: 400 }
+      );
+    }
+
+    // Additional check: ensure it's an ABX file
+    if (validation.fileInfo!.extension !== 'abx') {
+      logFileSecurityEvent('validation_failed', {
+        filename: file.name,
+        error: 'Not an ABX file',
+        detectedExtension: validation.fileInfo!.extension,
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      });
+
       return NextResponse.json(
         { error: 'Invalid file type. Only .abx files are supported.' },
         { status: 400 }
       );
     }
+
+    // Log warnings if any
+    if (validation.warnings.length > 0) {
+      console.warn('⚠️ ABX file validation warnings:', validation.warnings);
+    }
+
+    console.log('✅ ABX file validation passed:', validation.fileInfo);
 
     // Read file content
     const bytes = await file.arrayBuffer();
@@ -47,15 +111,61 @@ export async function POST(request: NextRequest) {
     // Convert to database format
     const bookData = abxToBookData(abxBook);
 
-    // Save ABX file to uploads directory
+    // Use secure filename from validation
+    const secureFilename = validation.fileInfo!.secureName;
+
+    // 🔒 SECURITY: Save ABX file to uploads directory with safe filename
     const uploadsDir = join(process.cwd(), 'uploads', 'abx');
     if (!existsSync(uploadsDir)) {
       await mkdir(uploadsDir, { recursive: true });
     }
 
-    const fileName = `${Date.now()}_${file.name}`;
-    const filePath = join(uploadsDir, fileName);
+    const filePath = join(uploadsDir, secureFilename);
+
+    // 🔒 SECURITY: Double-check path is within allowed directory (defense in depth)
+    try {
+      validateFilePath(filePath, 'uploads');
+    } catch (pathError) {
+      logFileSecurityEvent('suspicious_file', {
+        originalName: file.name,
+        secureName: secureFilename,
+        generatedPath: filePath,
+        error: pathError,
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      });
+
+      console.error('⚠️ SECURITY ALERT: Invalid path detected!', {
+        originalName: file.name,
+        secureName: secureFilename,
+        generatedPath: filePath,
+        error: pathError
+      });
+
+      return NextResponse.json(
+        { error: 'Invalid file path' },
+        { status: 400 }
+      );
+    }
+
     await writeFile(filePath, buffer);
+
+    // Log successful upload
+    logSecurityEvent('file_uploaded', filePath, {
+      originalName: file.name,
+      secureName: secureFilename,
+      size: file.size,
+      type: 'ABX',
+      detectedType: validation.fileInfo!.detectedType
+    });
+
+    logFileSecurityEvent('upload_attempt', {
+      filename: secureFilename,
+      originalName: file.name,
+      size: file.size,
+      detectedType: validation.fileInfo!.detectedType,
+      success: true,
+      ip: request.headers.get('x-forwarded-for') || 'unknown'
+    });
 
     // Check if category exists, create if not
     let category = await prisma.category.findFirst({

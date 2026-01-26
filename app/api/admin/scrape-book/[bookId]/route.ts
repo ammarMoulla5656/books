@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAdminAuth, logUnauthorizedAccess } from '@/lib/admin-auth';
 
 // قائمة الكتب المتاحة
 const AVAILABLE_BOOKS = {
@@ -18,9 +19,16 @@ const AVAILABLE_BOOKS = {
 };
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ bookId: string }> }
 ) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/scrape-book/[bookId] (GET)', request);
+    return authCheck.error;
+  }
+
   try {
     const { bookId } = await params;
 
@@ -51,9 +59,16 @@ export async function GET(
 }
 
 export async function POST(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ bookId: string }> }
 ) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/scrape-book/[bookId] (POST)', request, 'Attempted to scrape book without auth');
+    return authCheck.error;
+  }
+
   try {
     const { bookId } = await params;
     const { maxChapters = 10 } = await request.json().catch(() => ({}));

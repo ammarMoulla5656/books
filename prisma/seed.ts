@@ -1,10 +1,41 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
+// Generate secure password from environment or create random one
+function getInitialAdminPassword(): string {
+  const envPassword = process.env.ADMIN_INITIAL_PASSWORD;
+
+  if (envPassword && envPassword.length >= 12) {
+    console.log('🔒 Using password from ADMIN_INITIAL_PASSWORD environment variable');
+    return envPassword;
+  }
+
+  // Generate cryptographically secure random password
+  const length = 24;
+  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=';
+  let password = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = crypto.randomInt(charset.length);
+    password += charset[randomIndex];
+  }
+
+  console.warn('\n⚠️  ═══════════════════════════════════════════════════════════');
+  console.warn('⚠️  WARNING: ADMIN_INITIAL_PASSWORD not set in .env');
+  console.warn('⚠️  Generated random password (SAVE THIS IMMEDIATELY):');
+  console.warn(`⚠️  \n    ${password}\n`);
+  console.warn(`⚠️  Add to .env file as:`);
+  console.warn(`⚠️  ADMIN_INITIAL_PASSWORD="${password}"`);
+  console.warn('⚠️  ═══════════════════════════════════════════════════════════\n');
+
+  return password;
+}
+
 async function main() {
-  console.log('🌱 بدء إضافة البيانات الأساسية...');
+  console.log('🌱 بدء إضافة البيانات الأساسية...\n');
 
   // إنشاء التصنيفات
   const categories = [
@@ -50,11 +81,12 @@ async function main() {
     }
   }
 
-  console.log('✅ تم إنشاء التصنيفات');
+  console.log('✅ تم إنشاء التصنيفات\n');
 
   // إنشاء حساب Admin
-  const hashedPassword = await bcrypt.hash('Admin@123456', 10);
-  
+  const initialPassword = getInitialAdminPassword();
+  const hashedPassword = await bcrypt.hash(initialPassword, 12);
+
   await prisma.admin.upsert({
     where: { email: 'admin@islamic-library.com' },
     update: {},
@@ -62,12 +94,13 @@ async function main() {
       email: 'admin@islamic-library.com',
       password: hashedPassword,
       name: 'المسؤول',
+      mustChangePassword: true, // Force password change on first login
     },
   });
 
   console.log('✅ تم إنشاء حساب Admin');
-  console.log('   البريد: admin@islamic-library.com');
-  console.log('   كلمة المرور: Admin@123456');
+  console.log('   📧 البريد: admin@islamic-library.com');
+  console.log('   🔐 يجب تغيير كلمة المرور عند أول تسجيل دخول\n');
 }
 
 main()

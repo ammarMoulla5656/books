@@ -6,11 +6,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { pythonService } from '@/lib/python-service';
+import { requireAdminAuth, logUnauthorizedAccess } from '@/lib/admin-auth';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/documents/[id]/status', request);
+    return authCheck.error;
+  }
+
   try {
     const { id } = await params;
 

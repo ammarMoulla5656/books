@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate-secrets": "ts-node scripts/generate-env-secrets.ts",
+    "validate-env": "ts-node -e \"import('./lib/env-validator').then(m => m.validateEnvironmentOrExit())\""
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",

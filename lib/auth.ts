@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
+import { getOrGenerateAdminPassword } from './password-generator';
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 12);
@@ -18,7 +19,10 @@ async function ensureDefaultAdmin() {
     });
 
     if (!existingAdmin) {
-      const hashedPassword = await hashPassword('Admin@123456');
+      // Get password from environment or generate secure random password
+      const initialPassword = getOrGenerateAdminPassword();
+      const hashedPassword = await hashPassword(initialPassword);
+
       await prisma.admin.create({
         data: {
           email: defaultAdminEmail,
@@ -26,10 +30,20 @@ async function ensureDefaultAdmin() {
           name: 'Admin',
         },
       });
+
       console.log('✅ Created default admin account');
+      console.log(`📧 Email: ${defaultAdminEmail}`);
+
+      // Only log password if it was generated (not from env)
+      if (!process.env.ADMIN_INITIAL_PASSWORD) {
+        console.warn('⚠️  IMPORTANT: Save the password shown above!');
+        console.warn('⚠️  You will be required to change it on first login.');
+      } else {
+        console.log('🔒 Using password from ADMIN_INITIAL_PASSWORD environment variable');
+      }
     }
   } catch (error) {
-    console.error('Error ensuring default admin:', error);
+    console.error('❌ Error ensuring default admin:', error);
   }
 }
 

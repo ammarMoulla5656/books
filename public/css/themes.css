@@ -1,0 +1,185 @@
+/* ===================================
+   نظام الثيمات - المكتبة الإسلامية
+   =================================== */
+
+/* الثيم الفاتح (الافتراضي) */
+:root,
+[data-theme="light"] {
+    /* الألوان الأساسية */
+    --bg-primary: #f5f5f0;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #e8e8e0;
+    --bg-card: #ffffff;
+    --bg-hover: #f0f0e8;
+
+    /* ألوان النص */
+    --text-primary: #1a1a2e;
+    --text-secondary: #4a4a6a;
+    --text-muted: #7a7a8a;
+    --text-inverse: #ffffff;
+
+    /* الألوان المميزة */
+    --accent-primary: #0d7377;
+    --accent-secondary: #14a3a8;
+    --accent-light: #e0f4f4;
+    --accent-dark: #095557;
+
+    /* ألوان إسلامية */
+    --islamic-gold: #c9a227;
+    --islamic-gold-light: #f4e4b5;
+    --islamic-green: #1e5631;
+    --islamic-green-light: #d4edda;
+
+    /* الحدود والظلال */
+    --border-color: #e0e0d8;
+    --border-light: #f0f0e8;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
+
+    /* الشريط الجانبي */
+    --sidebar-bg: #fafaf8;
+    --sidebar-border: #e8e8e0;
+    --sidebar-item-hover: #f0f0e8;
+    --sidebar-item-active: #e0f4f4;
+
+    /* حقول الإدخال */
+    --input-bg: #ffffff;
+    --input-border: #d0d0c8;
+    --input-focus: #0d7377;
+    --input-placeholder: #9a9a9a;
+
+    /* الأزرار */
+    --btn-primary-bg: #0d7377;
+    --btn-primary-text: #ffffff;
+    --btn-primary-hover: #095557;
+    --btn-secondary-bg: #f0f0e8;
+    --btn-secondary-text: #1a1a2e;
+    --btn-secondary-hover: #e0e0d8;
+
+    /* شريط التنقل */
+    --nav-bg: rgba(255, 255, 255, 0.95);
+    --nav-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+
+    /* البطاقات */
+    --card-bg: #ffffff;
+    --card-border: #e8e8e0;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+    /* شريط التمرير */
+    --scrollbar-track: #f0f0e8;
+    --scrollbar-thumb: #c0c0b8;
+    --scrollbar-thumb-hover: #a0a098;
+
+    /* حالات خاصة */
+    --success: #28a745;
+    --warning: #ffc107;
+    --error: #dc3545;
+    --info: #17a2b8;
+
+    /* AI ميزات */
+    --ai-gradient-start: #0d7377;
+    --ai-gradient-end: #14a3a8;
+    --ai-bg: linear-gradient(135deg, #e0f4f4 0%, #f0f8f8 100%);
+    --ai-border: #b0e0e0;
+}
+
+/* الثيم الداكن */
+[data-theme="dark"] {
+    /* الألوان الأساسية */
+    --bg-primary: #0a0a14;
+    --bg-secondary: #12121e;
+    --bg-tertiary: #1a1a2e;
+    --bg-card: #16162a;
+    --bg-hover: #1e1e38;
+
+    /* ألوان النص */
+    --text-primary: #e8e8f0;
+    --text-secondary: #a8a8c0;
+    --text-muted: #6a6a88;
+    --text-inverse: #0a0a14;
+
+    /* الألوان المميزة */
+    --accent-primary: #14a3a8;
+    --accent-secondary: #1abc9c;
+    --accent-light: #1a2a38;
+    --accent-dark: #0d7377;
+
+    /* ألوان إسلامية */
+    --islamic-gold: #d4a82a;
+    --islamic-gold-light: #2a2518;
+    --islamic-green: #2ecc71;
+    --islamic-green-light: #1a2a1e;
+
+    /* الحدود والظلال */
+    --border-color: #2a2a48;
+    --border-light: #1e1e38;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+
+    /* الشريط الجانبي */
+    --sidebar-bg: #0e0e1a;
+    --sidebar-border: #2a2a48;
+    --sidebar-item-hover: #1a1a30;
+    --sidebar-item-active: #1a2a38;
+
+    /* حقول الإدخال */
+    --input-bg: #1a1a2e;
+    --input-border: #3a3a58;
+    --input-focus: #14a3a8;
+    --input-placeholder: #5a5a78;
+
+    /* الأزرار */
+    --btn-primary-bg: #14a3a8;
+    --btn-primary-text: #0a0a14;
+    --btn-primary-hover: #1abc9c;
+    --btn-secondary-bg: #1e1e38;
+    --btn-secondary-text: #e8e8f0;
+    --btn-secondary-hover: #2a2a48;
+
+    /* شريط التنقل */
+    --nav-bg: rgba(10, 10, 20, 0.95);
+    --nav-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+
+    /* البطاقات */
+    --card-bg: #16162a;
+    --card-border: #2a2a48;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --card-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+    /* شريط التمرير */
+    --scrollbar-track: #1a1a2e;
+    --scrollbar-thumb: #3a3a58;
+    --scrollbar-thumb-hover: #4a4a68;
+
+    /* حالات خاصة */
+    --success: #2ecc71;
+    --warning: #f39c12;
+    --error: #e74c3c;
+    --info: #3498db;
+
+    /* AI ميزات */
+    --ai-gradient-start: #14a3a8;
+    --ai-gradient-end: #1abc9c;
+    --ai-bg: linear-gradient(135deg, #1a2a38 0%, #12121e 100%);
+    --ai-border: #2a4a50;
+}
+
+/* انتقالات سلسة عند تغيير الثيم */
+body,
+body * {
+    transition: background-color 0.3s ease,
+                border-color 0.3s ease,
+                color 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+/* استثناء بعض العناصر من الانتقالات */
+.no-transition,
+.no-transition * {
+    transition: none !important;
+}

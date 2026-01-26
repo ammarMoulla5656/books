@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="المكتبة الإسلامية - مكتبة رقمية شاملة مدعومة بالذكاء الاصطناعي">
+    <meta name="theme-color" content="#f5f5f0">
+
+    <title>المكتبة الإسلامية - مكتبة رقمية مدعومة بالذكاء الاصطناعي</title>
+
+    <!-- الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- الأنماط -->
+    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+
+    <!-- أيقونة الموقع -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="/index-static.html" class="navbar-brand">
+                <span class="navbar-logo">📚</span>
+                <span>المكتبة الإسلامية</span>
+            </a>
+
+            <nav class="navbar-nav">
+                <a href="/index-static.html" class="nav-link active">الرئيسية</a>
+            </nav>
+
+            <div class="navbar-actions">
+                <button class="theme-toggle" aria-label="تبديل الثيم" id="theme-toggle">
+                    <span class="theme-toggle-sun">☀️</span>
+                    <span class="theme-toggle-moon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main>
+        <!-- قسم البطل -->
+        <section class="hero">
+            <div class="hero-bg islamic-pattern"></div>
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        المكتبة الإسلامية
+                        <span class="hero-title-accent">الذكية</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        اكتشف كنوز المعرفة الإسلامية من كتب أهل البيت عليهم السلام
+                        <br>
+                        مدعومة بتقنيات الذكاء الاصطناعي للتلخيص والشرح والبحث الذكي
+                    </p>
+
+                    <div class="hero-stats" id="hero-stats">
+                        <div class="hero-stat">
+                            <span class="hero-stat-number" id="books-count">0</span>
+                            <span class="hero-stat-label">كتاب</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-number">50+</span>
+                            <span class="hero-stat-label">مؤلف</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-number" id="categories-count">0</span>
+                            <span class="hero-stat-label">تصنيفات</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم التصنيفات -->
+        <section class="categories-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">تصفح حسب التصنيف</h2>
+                    <p class="section-subtitle">اختر التصنيف الذي يناسب اهتماماتك</p>
+                </div>
+
+                <div class="categories-grid grid-auto" id="categories-grid">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الكتب المميزة -->
+        <section class="featured-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">الكتب المميزة</h2>
+                    <p class="section-subtitle">أهم المصادر في المكتبة الإسلامية</p>
+                </div>
+
+                <div class="featured-books grid-auto" id="featured-books">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الميزات -->
+        <section class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">مميزات المكتبة الذكية</h2>
+                    <p class="section-subtitle">تقنيات حديثة بالذكاء الاصطناعي لتجربة قراءة فريدة</p>
+                </div>
+
+                <div class="features-grid grid-3">
+                    <div class="feature-card feature-card-highlight">
+                        <div class="feature-icon">🔍</div>
+                        <h3 class="feature-title">أين ورد النص؟</h3>
+                        <p class="feature-desc">محرك بحث متقدم لإيجاد النصوص في جميع الكتب بسهولة</p>
+                        <span class="feature-badge">جديد</span>
+                    </div>
+
+                    <div class="feature-card feature-card-highlight">
+                        <div class="feature-icon">📖</div>
+                        <h3 class="feature-title">جلب النص الذكي</h3>
+                        <p class="feature-desc">البحث الذكي عن نصوص مشابهة وذات صلة بكلمات بسيطة</p>
+                        <span class="feature-badge">جديد</span>
+                    </div>
+
+                    <div class="feature-card feature-card-highlight">
+                        <div class="feature-icon">🤖</div>
+                        <h3 class="feature-title">المحادثة الذكية</h3>
+                        <p class="feature-desc">مساعد ذكي يجيب على أسئلتك حول النصوص الإسلامية</p>
+                        <span class="feature-badge">جديد</span>
+                    </div>
+
+                    <div class="feature-card feature-card-highlight">
+                        <div class="feature-icon">📝</div>
+                        <h3 class="feature-title">محرر التقارير</h3>
+                        <p class="feature-desc">محرر متقدم لكتابة التقارير والدراسات بسهولة وأدوات تنسيق كاملة</p>
+                        <span class="feature-badge">جديد</span>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🌓</div>
+                        <h3 class="feature-title">وضع ليلي</h3>
+                        <p class="feature-desc">اقرأ براحة في أي وقت مع دعم الوضع الداكن</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🔖</div>
+                        <h3 class="feature-title">علامات مرجعية</h3>
+                        <p class="feature-desc">احفظ مكانك وعد إليه في أي وقت</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم الدعوة للعمل -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2 class="cta-title">ابدأ رحلتك في طلب العلم</h2>
+                    <p class="cta-text">
+                        "طلب العلم فريضة على كل مسلم ومسلمة"
+                        <br>
+                        <span class="cta-attribution">- رسول الله صلى الله عليه وآله</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span>📚</span>
+                        <span>المكتبة الإسلامية</span>
+                    </div>
+                    <p class="footer-desc">
+                        مكتبة رقمية شاملة لكتب أهل البيت عليهم السلام، مدعومة بتقنيات الذكاء الاصطناعي لتسهيل البحث والقراءة.
+                    </p>
+                </div>
+
+                <div class="footer-links-group">
+                    <h4 class="footer-title">التصنيفات</h4>
+                    <ul class="footer-links" id="footer-categories">
+                        <!-- سيتم ملؤها بواسطة JavaScript -->
+                    </ul>
+                </div>
+
+                <div class="footer-links-group">
+                    <h4 class="footer-title">روابط سريعة</h4>
+                    <ul class="footer-links">
+                        <li><a href="/index-static.html" class="footer-link">الرئيسية</a></li>
+                        <li><a href="/secret-admin-panel-xyz" class="footer-link">لوحة التحكم</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>جميع الحقوق محفوظة © 2024 المكتبة الإسلامية</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // تحميل التصنيفات
+        async function loadCategories() {
+            try {
+                const response = await fetch('/api/categories');
+                const categories = await response.json();
+
+                // عرض التصنيفات
+                const gridHTML = categories.map(cat => `
+                    <div class="category-card">
+                        <div class="category-icon">${cat.icon || '📚'}</div>
+                        <h3 class="category-name">${cat.arabicName}</h3>
+                        <p class="category-count">${cat._count?.books || 0} كتاب</p>
+                    </div>
+                `).join('');
+
+                document.getElementById('categories-grid').innerHTML = gridHTML;
+                document.getElementById('categories-count').textContent = categories.length;
+
+                // إضافة للفوتر
+                const footerHTML = categories.slice(0, 4).map(cat => `
+                    <li><a href="#" class="footer-link">${cat.arabicName}</a></li>
+                `).join('');
+                document.getElementById('footer-categories').innerHTML = footerHTML;
+
+            } catch (error) {
+                console.error('خطأ في تحميل التصنيفات:', error);
+            }
+        }
+
+        // تحميل الكتب
+        async function loadBooks() {
+            try {
+                const response = await fetch('/api/books');
+                const books = await response.json();
+
+                // عرض أول 6 كتب
+                const featuredBooks = books.slice(0, 6);
+                const booksHTML = featuredBooks.map(book => `
+                    <a href="/book.html?id=${book.id}" class="book-card">
+                        <div class="book-card-cover">
+                            <img src="${book.coverImage || '/placeholder-book.jpg'}"
+                                 alt="${book.title}"
+                                 onerror="this.src='/placeholder-book.jpg'">
+                        </div>
+                        <div class="book-card-content">
+                            <span class="book-card-category">
+                                ${book.category?.arabicName || 'غير مصنف'}
+                            </span>
+                            <h3 class="book-card-title">${book.title}</h3>
+                            <p class="book-card-author">${book.author}</p>
+                        </div>
+                    </a>
+                `).join('');
+
+                document.getElementById('featured-books').innerHTML = booksHTML;
+                document.getElementById('books-count').textContent = books.length;
+
+            } catch (error) {
+                console.error('خطأ في تحميل الكتب:', error);
+                document.getElementById('featured-books').innerHTML = `
+                    <div class="empty-state">
+                        <p>لا توجد كتب متاحة حالياً</p>
+                    </div>
+                `;
+            }
+        }
+
+        // تبديل الثيم
+        document.getElementById('theme-toggle').addEventListener('click', function() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // تحميل الثيم المحفوظ
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // تحميل البيانات عند فتح الصفحة
+        loadCategories();
+        loadBooks();
+    </script>
+
+    <!-- أنماط إضافية للصفحة الرئيسية -->
+    <style>
+        .hero {
+            position: relative;
+            padding: 120px 0 80px;
+            background: var(--bg-secondary);
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.2;
+        }
+
+        .hero-title-accent {
+            color: var(--accent-primary);
+            display: block;
+        }
+
+        .hero-subtitle {
+            font-size: var(--font-size-lg);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xl);
+            line-height: 1.8;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-2xl);
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            display: block;
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .hero-stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+
+        .categories-section {
+            padding: var(--spacing-3xl) 0;
+            background: var(--bg-primary);
+        }
+
+        .categories-grid {
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: var(--spacing-lg) !important;
+        }
+
+        .featured-section {
+            padding: var(--spacing-3xl) 0;
+            background: var(--bg-secondary);
+        }
+
+        .features-section {
+            padding: var(--spacing-3xl) 0;
+            background: var(--bg-primary);
+        }
+
+        .features-grid {
+            gap: var(--spacing-lg);
+        }
+
+        .cta-section {
+            padding: var(--spacing-3xl) 0;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-dark) 100%);
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: var(--font-size-3xl);
+            color: white;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .cta-text {
+            font-family: var(--font-arabic);
+            font-size: var(--font-size-xl);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: var(--spacing-xl);
+            line-height: 2;
+        }
+
+        .cta-attribution {
+            display: block;
+            font-size: var(--font-size-base);
+            opacity: 0.8;
+            margin-top: var(--spacing-sm);
+        }
+
+        @media (max-width: 992px) {
+            .categories-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 100px 0 60px;
+            }
+
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: var(--spacing-lg);
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

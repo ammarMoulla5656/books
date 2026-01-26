@@ -1,0 +1,300 @@
+/* ========== صفحة قارئ الكتب ========== */
+
+.book-reader-page {
+    overflow-x: hidden;
+}
+
+/* تخطيط الصفحة */
+.book-layout {
+    display: flex;
+    min-height: calc(100vh - var(--header-height));
+    padding-top: var(--header-height);
+}
+
+/* الشريط الجانبي */
+.book-sidebar {
+    position: fixed;
+    top: var(--header-height);
+    right: 0;
+    width: var(--sidebar-width);
+    height: calc(100vh - var(--header-height));
+    background: var(--sidebar-bg);
+    border-left: 1px solid var(--sidebar-border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    transition: transform var(--transition-normal);
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid var(--sidebar-border);
+}
+
+.sidebar-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin: 0;
+}
+
+.sidebar-close {
+    display: none;
+}
+
+.sidebar-search {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--sidebar-border);
+}
+
+.sidebar-search .input {
+    width: 100%;
+}
+
+.sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-md);
+}
+
+.sidebar-footer {
+    padding: var(--spacing-md);
+    border-top: 1px solid var(--sidebar-border);
+}
+
+.book-progress {
+    text-align: center;
+}
+
+.progress-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-xs);
+}
+
+.progress-text {
+    font-size: var(--font-size-sm);
+    color: var(--accent-primary);
+    font-weight: 600;
+    margin-top: var(--spacing-xs);
+}
+
+/* منطقة القراءة */
+.book-main {
+    flex: 1;
+    margin-right: var(--sidebar-width);
+    background: var(--bg-primary);
+}
+
+.book-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+}
+
+.book-content {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
+    box-shadow: var(--shadow-sm);
+    min-height: 60vh;
+}
+
+.book-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    color: var(--text-muted);
+}
+
+.book-loading p {
+    margin-top: var(--spacing-md);
+}
+
+/* عنوان المحتوى */
+.content-header {
+    margin-bottom: var(--spacing-xl);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.content-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.content-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+/* محتوى القراءة */
+.content-body {
+    font-family: var(--font-arabic);
+    font-size: 1.25rem;
+    line-height: 2.2;
+    color: var(--text-primary);
+}
+
+.content-body p {
+    margin-bottom: var(--spacing-lg);
+    text-align: justify;
+    text-indent: 2em;
+}
+
+/* التنقل بين الصفحات */
+.content-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-2xl);
+    padding-top: var(--spacing-xl);
+    border-top: 1px solid var(--border-color);
+}
+
+.content-navigation .btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.content-navigation .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* معلومات الكتاب المصغرة */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.book-info-mini {
+    display: none;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+}
+
+.navbar.scrolled .book-info-mini {
+    display: flex;
+}
+
+.book-title-mini {
+    color: var(--text-primary);
+    font-weight: 500;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* حالة الخطأ */
+.error-state {
+    text-align: center;
+    padding: var(--spacing-3xl);
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-icon {
+    font-size: 64px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.error-state h3 {
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+}
+
+.sidebar-toggle-btn {
+    display: none;
+}
+
+.navbar-brand-text {
+    display: inline;
+}
+
+/* متجاوب */
+@media (max-width: 992px) {
+    .book-sidebar {
+        transform: translateX(100%);
+    }
+
+    .book-sidebar.open {
+        transform: translateX(0);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .sidebar-close {
+        display: flex;
+    }
+
+    .book-main {
+        margin-right: 0;
+    }
+
+    .sidebar-toggle-btn {
+        display: flex !important;
+    }
+
+    .navbar-brand-text {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .book-container {
+        padding: var(--spacing-md);
+    }
+
+    .book-content {
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-lg);
+    }
+
+    .content-body {
+        font-size: 1.1rem;
+        line-height: 2;
+    }
+
+    .content-navigation {
+        flex-direction: column;
+    }
+
+    .content-navigation .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .toolbar {
+        width: calc(100% - 20px);
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .book-info-mini {
+        display: none !important;
+    }
+
+    .toolbar-btn:not(:nth-child(-n+3)):not(:last-child) {
+        display: none;
+    }
+}

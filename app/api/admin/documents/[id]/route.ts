@@ -7,6 +7,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { unlink } from 'fs/promises';
+import { validateFilePath, logSecurityEvent } from '@/lib/file-utils';
+import { requireAdminAuth, logUnauthorizedAccess } from '@/lib/admin-auth';
 
 // ============================================
 // GET - Get document upload details
@@ -16,6 +18,13 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/documents/[id] (GET)', request);
+    return authCheck.error;
+  }
+
   try {
     const { id } = await params;
 
@@ -39,12 +48,6 @@ export async function GET(
             },
           },
         },
-        book: {
-          select: {
-            id: true,
-            title: true,
-          },
-        },
       },
     });
 
@@ -55,7 +58,17 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(upload);
+    const book = upload.bookId
+      ? await prisma.book.findUnique({
+          where: { id: upload.bookId },
+          select: { id: true, title: true },
+        })
+      : null;
+
+    return NextResponse.json({
+      ...upload,
+      book,
+    });
   } catch (error) {
     console.error('Failed to fetch upload:', error);
     return NextResponse.json(
@@ -73,8 +86,15 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // ✅ SECURITY: Require admin authentication
+  const authCheck = await requireAdminAuth();
+  if (authCheck.error) {
+    logUnauthorizedAccess('/api/admin/documents/[id] (DELETE)', request);
+    return authCheck.error;
+  }
+
   try {
-    const { id } = await params;
+    const { id} = await params;
 
     const upload = await prisma.documentUpload.findUnique({
       where: { id },
@@ -87,10 +107,34 @@ export async function DELETE(
       );
     }
 
-    // Delete file from storage
+    // Delete file from storage with path validation
     try {
-      await unlink(upload.storagePath);
+      // 🔒 Security: Validate that the file path is within uploads directory
+      // Prevents Path Traversal attacks (CWE-22)
+      const safePath = validateFilePath(upload.storagePath, 'uploads');
+
+      // Log security event
+      logSecurityEvent('file_deleted', safePath, {
+        uploadId: id,
+        originalPath: upload.storagePath
+      });
+
+      await unlink(safePath);
     } catch (fileError) {
+      // Check if it's a security error or file system error
+      if (fileError instanceof Error && fileError.message.includes('Security violation')) {
+        console.error('⚠️ SECURITY ALERT: Path traversal attempt detected!', {
+          uploadId: id,
+          attemptedPath: upload.storagePath,
+          error: fileError.message
+        });
+
+        return NextResponse.json(
+          { error: 'Invalid file path detected' },
+          { status: 400 }
+        );
+      }
+
       console.warn('Failed to delete file:', fileError);
       // Continue with database deletion even if file deletion fails
     }
