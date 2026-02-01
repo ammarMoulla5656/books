@@ -25,9 +25,9 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
     chapter.sections.map(section => ({
       chapter,
       section,
-      pageNumber: extractPageNumber(section.title) || section.order,
+      pageNumber: extractPageNumber(section.title) || section.order || 0,
     }))
-  ).sort((a, b) => a.pageNumber - b.pageNumber);
+  ).sort((a, b) => (a.pageNumber ?? 0) - (b.pageNumber ?? 0));
 
   // Scroll to chapter when selected from TOC
   useEffect(() => {
@@ -118,7 +118,7 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
 
   // Extract page number from section title
   function extractPageNumber(title: string): number | null {
-    const match = title.match(/صفحة\s+(\d+)/);
+    const match = title.match(/\u0635\u0641\u062d\u0629\s*(\d+)/) || title.match(/(\d+)/);
     return match ? parseInt(match[1]) : null;
   }
 
@@ -126,6 +126,15 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
   const processContent = (content: string) => {
     const separatorPattern = /\n(─+)\n/;
     const parts = content.split(separatorPattern);
+    const bodyStyle = {
+      fontSize: `${readingSettings.fontSize}px`,
+      lineHeight: readingSettings.lineSpacing,
+    };
+    const footnoteFontSize = Math.max(12, Math.round(readingSettings.fontSize * 0.85));
+    const footnoteStyle = {
+      fontSize: `${footnoteFontSize}px`,
+      lineHeight: readingSettings.lineSpacing,
+    };
 
     if (parts.length >= 3) {
       const mainContent = parts[0];
@@ -133,7 +142,7 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
 
       return (
         <>
-          <div className="mb-8 leading-relaxed whitespace-pre-wrap">
+          <div className="mb-8 leading-relaxed whitespace-pre-wrap" style={bodyStyle}>
             {mainContent}
           </div>
 
@@ -141,7 +150,10 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
             <hr className="border-t-2 border-gray-400 dark:border-gray-600" />
           </div>
 
-          <div className="text-sm leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300">
+          <div
+            className="leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300"
+            style={footnoteStyle}
+          >
             {footnotesContent}
           </div>
         </>
@@ -149,7 +161,7 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
     }
 
     return (
-      <div className="leading-relaxed whitespace-pre-wrap">
+      <div className="leading-relaxed whitespace-pre-wrap" style={bodyStyle}>
         {content}
       </div>
     );
@@ -210,7 +222,7 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
                           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                             <span className="text-xs text-gray-500 dark:text-gray-400">✦</span>
                             <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                              {section.order}
+                              {section.order ?? extractPageNumber(section.title) ?? ''}
                             </span>
                           </div>
                           <div className="flex-grow h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-600 to-transparent"></div>

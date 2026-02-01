@@ -31,7 +31,7 @@ export default function ProcessingProgress({ uploadId }: { uploadId: string }) {
 
   // Poll for status
   useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+    let intervalId: ReturnType<typeof setInterval>;
 
     const fetchStatus = async () => {
       try {

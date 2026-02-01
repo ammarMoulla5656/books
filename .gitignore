@@ -44,3 +44,16 @@ next-env.d.ts
 
 # Auto Claude data directory
 .auto-claude/
+
+# Uploaded files (user data)
+/uploads/
+
+# Database scripts and temp files
+*.sql
+nul
+*.backup
+
+# Temporary files
+*.log
+tmpclaude-*
+*.abx

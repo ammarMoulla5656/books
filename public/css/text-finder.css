@@ -1,0 +1,260 @@
+/* ===================================
+   أين ورد هذا النص - المكتبة الإسلامية
+   =================================== */
+
+/* حالة البحث */
+.find-searching {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-3xl);
+    text-align: center;
+    gap: var(--spacing-lg);
+}
+
+.search-progress {
+    width: 100%;
+    max-width: 300px;
+    margin-top: var(--spacing-md);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    transition: width 0.2s ease;
+    border-radius: var(--radius-full);
+}
+
+.progress-text {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-sm);
+}
+
+/* حاوية النتائج */
+.find-results-container {
+    padding: var(--spacing-lg);
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* إحصائيات البحث */
+.find-stats {
+    background: linear-gradient(135deg, var(--accent-light) 0%, var(--bg-tertiary) 100%);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    border-right: 4px solid var(--accent-primary);
+}
+
+.find-stats h3 {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-lg);
+}
+
+.find-stats strong {
+    color: var(--accent-primary);
+}
+
+.find-query {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: var(--font-size-sm);
+}
+
+/* قائمة النتائج */
+.find-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+/* مجموعة الكتاب */
+.find-book-group {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-fast);
+}
+
+.find-book-group:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-primary);
+}
+
+/* رأس الكتاب */
+.book-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-tertiary);
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.book-header h4 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.result-count {
+    background: var(--accent-light);
+    color: var(--accent-primary);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+/* نتائج الكتاب */
+.book-results {
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+/* عنصر النتيجة */
+.result-item {
+    padding: var(--spacing-md);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    border-right: 3px solid var(--accent-primary);
+    transition: all var(--transition-fast);
+}
+
+.result-item:hover {
+    background: var(--bg-tertiary);
+    transform: translateX(-4px);
+}
+
+/* موقع النتيجة */
+.result-location {
+    margin-bottom: var(--spacing-sm);
+}
+
+.result-location strong {
+    display: block;
+    color: var(--text-primary);
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-xs);
+}
+
+.result-location small {
+    color: var(--text-muted);
+    font-size: var(--font-size-xs);
+}
+
+/* مقتطف النتيجة */
+.result-excerpt {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-sm);
+    max-height: 60px;
+    overflow: hidden;
+}
+
+.result-excerpt mark {
+    background: var(--islamic-gold-light);
+    color: var(--text-primary);
+    padding: 0 2px;
+    border-radius: 2px;
+    font-weight: 600;
+}
+
+/* أزرار النتيجة */
+.result-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* نتائج إضافية */
+.more-results {
+    padding: var(--spacing-md);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-style: italic;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+}
+
+/* لا توجد نتائج */
+.find-no-results {
+    text-align: center;
+    padding: var(--spacing-3xl);
+    color: var(--text-muted);
+}
+
+.find-no-results .empty-icon {
+    font-size: 64px;
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.5;
+}
+
+.find-no-results h3 {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.find-no-results p {
+    color: var(--text-secondary);
+}
+
+.hint {
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-md);
+}
+
+/* الإجراءات */
+.find-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg) 0 0;
+    margin-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-color);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* متجاوب */
+@media (max-width: 768px) {
+    .find-results-container {
+        max-height: 400px;
+    }
+
+    .find-stats {
+        padding: var(--spacing-md);
+    }
+
+    .book-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .result-item {
+        padding: var(--spacing-sm);
+    }
+
+    .find-actions {
+        flex-direction: column;
+    }
+
+    .find-actions .btn {
+        width: 100%;
+    }
+}

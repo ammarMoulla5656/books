@@ -1,0 +1,3 @@
+@echo off
+echo فتح Terminal جديد...
+start cmd /k "cd /d %~dp0 && npm start"

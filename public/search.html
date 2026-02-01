@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="البحث في المكتبة الإسلامية - ابحث عن الكتب والمؤلفين والمواضيع">
+    <meta name="theme-color" content="#f5f5f0">
+
+    <title>البحث - المكتبة الإسلامية</title>
+
+    <!-- الخطوط -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- الأنماط -->
+    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/context-menu.css">
+    <link rel="stylesheet" href="/css/text-finder.css">
+    <link rel="stylesheet" href="/css/smart-fetch.css">
+    <link rel="stylesheet" href="/css/ai-chat.css">
+    <link rel="stylesheet" href="/css/responsive.css">
+
+    <!-- أيقونة الموقع -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="/index.html" class="navbar-brand">
+                <span class="navbar-logo">📚</span>
+                <span>المكتبة الإسلامية</span>
+            </a>
+
+            <nav class="navbar-nav">
+                <a href="/index.html" class="nav-link">الرئيسية</a>
+                <a href="category.html?id=fiqh" class="nav-link">الفقه</a>
+                <a href="category.html?id=aqeedah" class="nav-link">العقائد</a>
+                <a href="category.html?id=hadith" class="nav-link">الحديث</a>
+                <a href="search.html" class="nav-link active">البحث</a>
+                <a href="report-editor.html" class="nav-link">📝 التقارير</a>
+            </nav>
+
+            <div class="navbar-actions">
+                <button class="theme-toggle" aria-label="تبديل الثيم">
+                    <span class="theme-toggle-sun">☀️</span>
+                    <span class="theme-toggle-moon">🌙</span>
+                </button>
+
+                <button class="navbar-toggle" aria-label="القائمة">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="search-page">
+        <div class="container">
+            <!-- عنوان الصفحة -->
+            <div class="search-header">
+                <h1 class="search-page-title">البحث في المكتبة</h1>
+                <p class="search-page-subtitle">ابحث عن كتاب، مؤلف، أو أي موضوع تريده</p>
+            </div>
+
+            <!-- شريط البحث الرئيسي -->
+            <div class="search-section">
+                <div class="search-bar search-bar-lg">
+                    <input
+                        type="text"
+                        class="search-input"
+                        id="search-input"
+                        placeholder="اكتب ما تبحث عنه..."
+                        autocomplete="off"
+                        autofocus
+                    >
+                    <button class="search-btn" id="search-btn" aria-label="بحث">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- البحث الذكي -->
+                <div class="smart-search-hint">
+                    <span class="hint-icon">💡</span>
+                    <span class="hint-text">
+                        <strong>نصيحة:</strong> يمكنك كتابة ما تتذكره من النص حتى لو لم تكن الكلمات دقيقة
+                    </span>
+                </div>
+            </div>
+
+            <!-- الفلاتر -->
+            <div class="search-filters">
+                <div class="filter-group">
+                    <label class="filter-label">التصنيف:</label>
+                    <select class="filter-select" id="filter-category">
+                        <option value="all">جميع التصنيفات</option>
+                        <option value="fiqh">الفقه</option>
+                        <option value="aqeedah">العقائد</option>
+                        <option value="usul">أصول الفقه</option>
+                        <option value="tafsir">التفسير</option>
+                        <option value="hadith">الحديث</option>
+                        <option value="history">التاريخ</option>
+                        <option value="ethics">الأخلاق</option>
+                        <option value="dua">الأدعية</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">نوع البحث:</label>
+                    <select class="filter-select" id="filter-type">
+                        <option value="all">الكل</option>
+                        <option value="books">عناوين الكتب</option>
+                        <option value="content">محتوى الكتب</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-secondary btn-sm" id="reset-filters">
+                    إعادة تعيين
+                </button>
+            </div>
+
+            <!-- نتائج البحث -->
+            <div class="search-results-section">
+                <!-- حالة البداية -->
+                <div class="search-initial" id="search-initial">
+                    <div class="search-initial-icon">🔍</div>
+                    <h3>ابدأ البحث</h3>
+                    <p>اكتب كلمة أو عبارة للبحث في المكتبة</p>
+
+                    <div class="search-suggestions">
+                        <h4>اقتراحات:</h4>
+                        <div class="suggestion-tags">
+                            <button class="suggestion-tag" data-query="الصلاة">الصلاة</button>
+                            <button class="suggestion-tag" data-query="التوحيد">التوحيد</button>
+                            <button class="suggestion-tag" data-query="الإمامة">الإمامة</button>
+                            <button class="suggestion-tag" data-query="القرآن">القرآن</button>
+                            <button class="suggestion-tag" data-query="أهل البيت">أهل البيت</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- حالة التحميل -->
+                <div class="search-loading hidden" id="search-loading">
+                    <div class="spinner spinner-lg"></div>
+                    <p>جاري البحث...</p>
+                </div>
+
+                <!-- حالة عدم وجود نتائج -->
+                <div class="search-empty hidden" id="search-empty">
+                    <div class="empty-icon">📭</div>
+                    <h3>لم يتم العثور على نتائج</h3>
+                    <p>حاول استخدام كلمات مختلفة أو تغيير الفلاتر</p>
+                </div>
+
+                <!-- قائمة النتائج -->
+                <div class="search-results-container hidden" id="search-results-container">
+                    <div class="results-header">
+                        <span class="results-count" id="results-count">0 نتيجة</span>
+                        <span class="results-time" id="results-time"></span>
+                    </div>
+
+                    <div class="search-results-list" id="search-results-list">
+                        <!-- سيتم ملؤها بواسطة JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- التصنيفات السريعة -->
+            <div class="quick-categories">
+                <h3 class="quick-categories-title">تصفح حسب التصنيف</h3>
+                <div class="quick-categories-grid" id="quick-categories">
+                    <!-- سيتم ملؤها بواسطة JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- الفوتر -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>جميع الحقوق محفوظة © 2024 المكتبة الإسلامية</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- السكربتات -->
+    <script src="js/data.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/ai-features.js"></script>
+    <script src="js/context-menu.js"></script>
+    <script src="js/text-finder.js"></script>
+    <script src="js/smart-fetch.js"></script>
+    <script src="js/ai-chat.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // تهيئة صفحة البحث
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
+            const filterCategory = document.getElementById('filter-category');
+            const filterType = document.getElementById('filter-type');
+            const resetBtn = document.getElementById('reset-filters');
+            const suggestionTags = document.querySelectorAll('.suggestion-tag');
+            const quickCategories = document.getElementById('quick-categories');
+
+            // عرض التصنيفات السريعة
+            if (quickCategories && window.LibraryData) {
+                const categories = window.LibraryData.getCategories();
+                quickCategories.innerHTML = categories.map(cat => `
+                    <a href="category.html?id=${cat.id}" class="quick-category">
+                        <span class="quick-category-icon">${cat.icon}</span>
+                        <span class="quick-category-name">${cat.name}</span>
+                        <span class="quick-category-count">${cat.count}</span>
+                    </a>
+                `).join('');
+            }
+
+            // البحث عند الكتابة
+            let searchTimeout;
+            searchInput?.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    performSearch(e.target.value);
+                }, 300);
+            });
+
+            // البحث عند الضغط على Enter
+            searchInput?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch(searchInput.value);
+                }
+            });
+
+            // زر البحث
+            searchBtn?.addEventListener('click', () => {
+                performSearch(searchInput?.value);
+            });
+
+            // الفلاتر
+            filterCategory?.addEventListener('change', () => {
+                if (searchInput?.value) performSearch(searchInput.value);
+            });
+
+            filterType?.addEventListener('change', () => {
+                if (searchInput?.value) performSearch(searchInput.value);
+            });
+
+            // إعادة تعيين
+            resetBtn?.addEventListener('click', () => {
+                filterCategory.value = 'all';
+                filterType.value = 'all';
+                searchInput.value = '';
+                showInitial();
+            });
+
+            // الاقتراحات
+            suggestionTags.forEach(tag => {
+                tag.addEventListener('click', () => {
+                    const query = tag.dataset.query;
+                    searchInput.value = query;
+                    performSearch(query);
+                });
+            });
+
+            // قراءة البحث من URL
+            const params = new URLSearchParams(window.location.search);
+            const query = params.get('q');
+            if (query) {
+                searchInput.value = query;
+                performSearch(query);
+            }
+        });
+
+        // دالة البحث
+        function performSearch(query) {
+            if (!query || query.trim().length < 2) {
+                showInitial();
+                return;
+            }
+
+            showLoading();
+
+            const category = document.getElementById('filter-category')?.value || 'all';
+            const type = document.getElementById('filter-type')?.value || 'all';
+
+            setTimeout(() => {
+                const results = searchLibrary(query, category, type);
+                displayResults(results, query);
+            }, 200);
+        }
+
+        // البحث في المكتبة
+        function searchLibrary(query, category, type) {
+            if (!window.LibraryData) return [];
+
+            let results = [];
+
+            // البحث في عناوين الكتب
+            if (type === 'all' || type === 'books') {
+                const books = window.LibraryData.searchBooks(query);
+                books.forEach(book => {
+                    if (category === 'all' || book.category === category) {
+                        results.push({
+                            type: 'book',
+                            id: book.id,
+                            title: book.title,
+                            author: window.LibraryData.getAuthorName(book.author),
+                            category: window.LibraryData.getCategoryById(book.category)?.name,
+                            description: book.description,
+                            url: `book.html?id=${book.id}`
+                        });
+                    }
+                });
+            }
+
+            // البحث في المحتوى
+            if (type === 'all' || type === 'content') {
+                const contentResults = window.LibraryData.globalSearch(query);
+                contentResults.forEach(result => {
+                    const book = window.LibraryData.getBookById(result.bookId);
+                    if (category === 'all' || book?.category === category) {
+                        results.push({
+                            type: 'content',
+                            id: `${result.bookId}-${result.sectionId}`,
+                            title: result.sectionTitle,
+                            bookTitle: result.bookTitle,
+                            chapterTitle: result.chapterTitle,
+                            excerpt: highlightText(result.excerpt, query),
+                            url: `book.html?id=${result.bookId}&section=${result.sectionId}`
+                        });
+                    }
+                });
+            }
+
+            return results;
+        }
+
+        // تمييز النص المبحوث عنه
+        function highlightText(text, query) {
+            if (!text || !query) return text;
+            const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
+            return text.replace(regex, '<mark>$1</mark>');
+        }
+
+        function escapeRegex(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // عرض النتائج
+        function displayResults(results, query) {
+            const container = document.getElementById('search-results-container');
+            const list = document.getElementById('search-results-list');
+            const count = document.getElementById('results-count');
+
+            hideAll();
+
+            if (results.length === 0) {
+                document.getElementById('search-empty').classList.remove('hidden');
+                return;
+            }
+
+            count.textContent = `${results.length} نتيجة`;
+
+            list.innerHTML = results.map(result => {
+                if (result.type === 'book') {
+                    return `
+                        <a href="${result.url}" class="search-result">
+                            <div class="search-result-icon">📖</div>
+                            <div class="search-result-body">
+                                <h3 class="search-result-title">${highlightText(result.title, query)}</h3>
+                                <div class="search-result-meta">
+                                    <span>${result.author}</span>
+                                    <span>•</span>
+                                    <span>${result.category}</span>
+                                </div>
+                                <p class="search-result-excerpt">${result.description}</p>
+                            </div>
+                            <span class="search-result-badge badge-primary">كتاب</span>
+                        </a>
+                    `;
+                } else {
+                    return `
+                        <a href="${result.url}" class="search-result">
+                            <div class="search-result-icon">📄</div>
+                            <div class="search-result-body">
+                                <h3 class="search-result-title">${result.title}</h3>
+                                <div class="search-result-meta">
+                                    <span>${result.bookTitle}</span>
+                                    <span>•</span>
+                                    <span>${result.chapterTitle}</span>
+                                </div>
+                                <p class="search-result-excerpt">${result.excerpt}</p>
+                            </div>
+                            <span class="search-result-badge badge-gold">محتوى</span>
+                        </a>
+                    `;
+                }
+            }).join('');
+
+            container.classList.remove('hidden');
+        }
+
+        // إظهار حالة البداية
+        function showInitial() {
+            hideAll();
+            document.getElementById('search-initial').classList.remove('hidden');
+        }
+
+        // إظهار حالة التحميل
+        function showLoading() {
+            hideAll();
+            document.getElementById('search-loading').classList.remove('hidden');
+        }
+
+        // إخفاء جميع الحالات
+        function hideAll() {
+            document.getElementById('search-initial')?.classList.add('hidden');
+            document.getElementById('search-loading')?.classList.add('hidden');
+            document.getElementById('search-empty')?.classList.add('hidden');
+            document.getElementById('search-results-container')?.classList.add('hidden');
+        }
+    </script>
+
+    <!-- أنماط صفحة البحث -->
+    <style>
+        .search-page {
+            padding-top: calc(var(--header-height) + var(--spacing-xl));
+            padding-bottom: var(--spacing-3xl);
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        /* عنوان الصفحة */
+        .search-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .search-page-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .search-page-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--font-size-lg);
+        }
+
+        /* شريط البحث */
+        .search-section {
+            max-width: 700px;
+            margin: 0 auto var(--spacing-xl);
+        }
+
+        .search-bar-lg {
+            position: relative;
+        }
+
+        .search-bar-lg .search-input {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            padding-left: 60px;
+            font-size: var(--font-size-lg);
+            border-radius: var(--radius-2xl);
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+        }
+
+        .search-bar-lg .search-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px var(--accent-light), var(--shadow-md);
+        }
+
+        .search-bar-lg .search-btn {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-xl);
+        }
+
+        .smart-search-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--ai-bg);
+            border: 1px solid var(--ai-border);
+            border-radius: var(--radius-lg);
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .hint-icon {
+            font-size: 16px;
+        }
+
+        /* الفلاتر */
+        .search-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            justify-content: center;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .filter-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .filter-select {
+            padding: var(--spacing-xs) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            cursor: pointer;
+        }
+
+        /* نتائج البحث */
+        .search-results-section {
+            min-height: 400px;
+        }
+
+        .search-initial,
+        .search-loading,
+        .search-empty {
+            text-align: center;
+            padding: var(--spacing-3xl);
+        }
+
+        .search-initial-icon,
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .search-initial h3,
+        .search-empty h3 {
+            font-size: var(--font-size-xl);
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .search-initial p,
+        .search-empty p,
+        .search-loading p {
+            color: var(--text-muted);
+        }
+
+        /* الاقتراحات */
+        .search-suggestions {
+            margin-top: var(--spacing-xl);
+        }
+
+        .search-suggestions h4 {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .suggestion-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            justify-content: center;
+        }
+
+        .suggestion-tag {
+            padding: var(--spacing-xs) var(--spacing-md);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-full);
+            color: var(--text-primary);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .suggestion-tag:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* رأس النتائج */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .results-count {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .results-time {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+
+        /* عناصر النتائج */
+        .search-results-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .search-result {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            color: inherit;
+            transition: all var(--transition-fast);
+        }
+
+        .search-result:hover {
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .search-result-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .search-result-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-result-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .search-result-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .search-result-excerpt {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .search-result-excerpt mark {
+            background: var(--islamic-gold-light);
+            color: var(--text-primary);
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        .search-result-badge {
+            flex-shrink: 0;
+        }
+
+        /* التصنيفات السريعة */
+        .quick-categories {
+            margin-top: var(--spacing-3xl);
+            padding-top: var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .quick-categories-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .quick-categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: var(--spacing-md);
+        }
+
+        .quick-category {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            color: inherit;
+            transition: all var(--transition-fast);
+        }
+
+        .quick-category:hover {
+            border-color: var(--accent-primary);
+            background: var(--accent-light);
+        }
+
+        .quick-category-icon {
+            font-size: 24px;
+        }
+
+        .quick-category-name {
+            flex: 1;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .quick-category-count {
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+        }
+
+        /* متجاوب */
+        @media (max-width: 768px) {
+            .search-bar-lg .search-input {
+                padding: var(--spacing-md) var(--spacing-lg);
+                padding-left: 50px;
+                font-size: var(--font-size-base);
+            }
+
+            .search-bar-lg .search-btn {
+                width: 36px;
+                height: 36px;
+            }
+
+            .search-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-group {
+                justify-content: space-between;
+            }
+
+            .search-result {
+                flex-direction: column;
+            }
+
+            .search-result-badge {
+                align-self: flex-start;
+            }
+
+            .quick-categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quick-categories-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>
