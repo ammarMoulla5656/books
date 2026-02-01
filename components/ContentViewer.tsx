@@ -126,6 +126,15 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
   const processContent = (content: string) => {
     const separatorPattern = /\n(─+)\n/;
     const parts = content.split(separatorPattern);
+    const bodyStyle = {
+      fontSize: `${readingSettings.fontSize}px`,
+      lineHeight: readingSettings.lineSpacing,
+    };
+    const footnoteFontSize = Math.max(12, Math.round(readingSettings.fontSize * 0.85));
+    const footnoteStyle = {
+      fontSize: `${footnoteFontSize}px`,
+      lineHeight: readingSettings.lineSpacing,
+    };
 
     if (parts.length >= 3) {
       const mainContent = parts[0];
@@ -133,7 +142,7 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
 
       return (
         <>
-          <div className="mb-8 leading-relaxed whitespace-pre-wrap">
+          <div className="mb-8 leading-relaxed whitespace-pre-wrap" style={bodyStyle}>
             {mainContent}
           </div>
 
@@ -141,7 +150,10 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
             <hr className="border-t-2 border-gray-400 dark:border-gray-600" />
           </div>
 
-          <div className="text-sm leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300">
+          <div
+            className="leading-relaxed whitespace-pre-wrap text-gray-700 dark:text-gray-300"
+            style={footnoteStyle}
+          >
             {footnotesContent}
           </div>
         </>
@@ -149,7 +161,7 @@ export default function ContentViewer({ book, scrollToChapterId }: ContentViewer
     }
 
     return (
-      <div className="leading-relaxed whitespace-pre-wrap">
+      <div className="leading-relaxed whitespace-pre-wrap" style={bodyStyle}>
         {content}
       </div>
     );

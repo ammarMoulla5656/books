@@ -151,6 +151,13 @@
     text-indent: 2em;
 }
 
+.content-separator {
+    border: none;
+    height: 2px;
+    margin: var(--spacing-lg) 0;
+    background: linear-gradient(to right, transparent, var(--border-color), transparent);
+}
+
 /* التنقل بين الصفحات */
 .content-navigation {
     display: flex;

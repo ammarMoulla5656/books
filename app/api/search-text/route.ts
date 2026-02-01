@@ -57,10 +57,10 @@ export async function POST(request: NextRequest) {
       );
 
       return {
-        bookId: book.id,
-        bookTitle: book.title,
-        bookAuthor: book.author,
-        categoryName: book.category?.arabicName || 'غير مصنف',
+        bookId: book?.id || '',
+        bookTitle: book?.title || '',
+        bookAuthor: book?.author || '',
+        categoryName: book?.category?.arabicName || 'غير مصنف',
         chapterTitle: section.chapter.title,
         sectionId: section.id,
         sectionTitle: section.title,

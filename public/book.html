@@ -185,8 +185,8 @@
     </div>
 
     <!-- نافذة البحث عن النص -->
-    <div id="textFinderModal" class="modal" style="display: none;">
-        <div class="modal-content modal-lg">
+    <div id="textFinderModal" class="modal-overlay" style="display: none;">
+        <div class="modal modal-lg">
             <div class="modal-header">
                 <h3>أين ورد النص؟</h3>
                 <button class="modal-close" onclick="closeTextFinder()">×</button>
@@ -208,8 +208,8 @@
     </div>
 
     <!-- نافذة الجلب الذكي -->
-    <div id="smartFetchModal" class="modal" style="display: none;">
-        <div class="modal-content modal-lg">
+    <div id="smartFetchModal" class="modal-overlay" style="display: none;">
+        <div class="modal modal-lg">
             <div class="modal-header">
                 <h3>جلب النص الذكي</h3>
                 <button class="modal-close" onclick="closeSmartFetch()">×</button>
@@ -230,8 +230,8 @@
     </div>
 
     <!-- نافذة المحادثة الذكية -->
-    <div id="aiChatModal" class="modal" style="display: none;">
-        <div class="modal-content modal-lg">
+    <div id="aiChatModal" class="modal-overlay" style="display: none;">
+        <div class="modal modal-lg">
             <div class="modal-header">
                 <h3>المحادثة الذكية</h3>
                 <button class="modal-close" onclick="closeAIChat()">×</button>
@@ -383,6 +383,9 @@
             content = content.replace(/صلى الله عليه وآله/g, '<span style="color: var(--islamic-gold); font-weight: 600;">صلى الله عليه وآله</span>');
             content = content.replace(/صلى الله عليه وسلم/g, '<span style="color: var(--islamic-gold); font-weight: 600;">صلى الله عليه وسلم</span>');
             content = content.replace(/«\s*(\d+)\s*»/g, '<sup style="font-size: 0.7em;">[‏$1‏]</sup>');
+            const separatorHtml = '<hr class="content-separator" />';
+            content = content.replace(/^\s*[-?????_=+\u2500\u2550]{3,}\s*$/gm, separatorHtml);
+            content = content.replace(/<br\s*\/?>\s*[-?????_=+\u2500\u2550]{3,}\s*<br\s*\/?>/gi, separatorHtml);
 
             // عرض المحتوى
             document.getElementById('book-content').innerHTML = `
@@ -526,15 +529,29 @@
         });
 
         // ===== البحث عن النص =====
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            modal.style.display = 'flex';
+            modal.classList.add('active');
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (!modal) return;
+            modal.classList.remove('active');
+            modal.style.display = 'none';
+        }
+
         function searchSelectedText() {
             document.getElementById('searchTextInput').value = selectedText;
-            document.getElementById('textFinderModal').style.display = 'flex';
+            openModal('textFinderModal');
             contextMenu.style.display = 'none';
             performTextSearch();
         }
 
         function closeTextFinder() {
-            document.getElementById('textFinderModal').style.display = 'none';
+            closeModal('textFinderModal');
         }
 
         async function performTextSearch() {
@@ -588,13 +605,13 @@
         // ===== الجلب الذكي =====
         function smartFetchSelected() {
             document.getElementById('smartFetchInput').value = selectedText;
-            document.getElementById('smartFetchModal').style.display = 'flex';
+            openModal('smartFetchModal');
             contextMenu.style.display = 'none';
             performSmartFetch();
         }
 
         function closeSmartFetch() {
-            document.getElementById('smartFetchModal').style.display = 'none';
+            closeModal('smartFetchModal');
         }
 
         async function performSmartFetch() {
@@ -652,12 +669,12 @@
             if (selectedText) {
                 document.getElementById('aiChatInput').value = `اشرح لي: "${selectedText}"`;
             }
-            document.getElementById('aiChatModal').style.display = 'flex';
+            openModal('aiChatModal');
             contextMenu.style.display = 'none';
         }
 
         function closeAIChat() {
-            document.getElementById('aiChatModal').style.display = 'none';
+            closeModal('aiChatModal');
         }
 
         async function sendAIMessage() {
@@ -776,9 +793,10 @@
         }
 
         // إغلاق النوافذ عند النقر على الخلفية
-        document.querySelectorAll('.modal').forEach(modal => {
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
+                    modal.classList.remove('active');
                     modal.style.display = 'none';
                 }
             });

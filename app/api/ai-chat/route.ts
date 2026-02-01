@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const searchKeywords = message.split(' ').slice(0, 5);
     const sections = await prisma.section.findMany({
       where: {
-        OR: searchKeywords.map(keyword => ({
+        OR: searchKeywords.map((keyword: string) => ({
           content: {
             contains: keyword,
             mode: 'insensitive',
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       contextText = '\n\nالمصادر المتاحة:\n';
       sections.forEach((section, idx) => {
         const excerpt = section.content.substring(0, 500);
-        contextText += `\n[${idx + 1}] من كتاب "${section.chapter.book.title}" - ${section.chapter.title}:\n${excerpt}...\n`;
+        contextText += `\n[${idx + 1}] من كتاب "${section.chapter.book?.title || 'كتاب'}" - ${section.chapter.title}:\n${excerpt}...\n`;
       });
     }
 
@@ -67,8 +67,8 @@ export async function POST(request: NextRequest) {
     // Add source references
     const sources = sections.map((section, idx) => ({
       id: idx + 1,
-      bookId: section.chapter.book.id,
-      bookTitle: section.chapter.book.title,
+      bookId: section.chapter.book?.id || '',
+      bookTitle: section.chapter.book?.title || '',
       chapterTitle: section.chapter.title,
       sectionId: section.id,
     }));

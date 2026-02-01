@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "المكتبة الإسلامية",
+    "slug": "islamic-library-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "islamic-library",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#1a472a"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.islamiclibrary.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1a472a"
+      },
+      "package": "com.islamiclibrary.mobile"
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    }
+  }
+}

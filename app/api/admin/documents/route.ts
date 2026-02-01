@@ -83,8 +83,8 @@ export async function POST(request: NextRequest) {
 
   try {
     const formData = await request.formData();
-    const file = formData.get('file') as File;
-    const optionsStr = formData.get('options') as string;
+    const file = (formData as any).get('file') as File;
+    const optionsStr = (formData as any).get('options') as string;
     const options = optionsStr ? JSON.parse(optionsStr) : {};
 
     if (!file) {

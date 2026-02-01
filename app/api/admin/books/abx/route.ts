@@ -26,9 +26,9 @@ export async function POST(request: NextRequest) {
 
   try {
     const formData = await request.formData();
-    const file = formData.get('file') as File;
+    const fileEntry = (formData as any).get('file');
 
-    if (!file) {
+    if (!fileEntry || !(fileEntry instanceof File)) {
       logFileSecurityEvent('upload_attempt', {
         error: 'No file provided',
         ip: request.headers.get('x-forwarded-for') || 'unknown'
@@ -39,6 +39,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    const file: File = fileEntry;
 
     // 🔒 COMPREHENSIVE SECURITY VALIDATION
     // Performs ALL security checks:

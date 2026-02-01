@@ -56,7 +56,27 @@
       "Bash(powershell \"Stop-Process -Id 42308 -Force\")",
       "Bash(gh pr view:*)",
       "Bash(gh pr diff:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(iconv:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File fix-encoding.ps1)",
+      "Bash(ping:*)",
+      "Bash(where:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File fix-db-encoding.ps1:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(tasklist:*)",
+      "Bash(export PGPASSWORD=\"iioopp00\")",
+      "Bash(\"/f/sql/bin/psql.exe\" -U postgres -d postgres -f force-recreate-db.sql)",
+      "Bash(\"/f/sql/bin/psql.exe\" -U postgres -d islamic_library -c \"SELECT NOW\\(\\) as الوقت_الحالي;\")",
+      "Bash(node --version:*)",
+      "Bash(npm --version:*)",
+      "Bash(npx create-expo-app@latest islamic-library-mobile --template blank-typescript)",
+      "Bash(npm create:*)",
+      "Bash(exit 0)",
+      "Bash(npx expo start:*)",
+      "Bash(npx expo install:*)"
+    ],
+    "additionalDirectories": [
+      "f:\\root ammar\\project\\conductor_playground\\algiers"
     ]
   }
 }
